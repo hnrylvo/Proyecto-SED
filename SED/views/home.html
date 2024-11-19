@@ -6,19 +6,44 @@
     <title>Veterinaria - Inicio</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
-    <div class="bg-white p-8 rounded-xl shadow-md w-96 text-center">
-      <h1 class="text-2xl font-bold">Bienvenido a Veterinaria</h1>
-      <button id="logoutBtn" class="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Cerrar Sesión</button>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-xl shadow-md w-96 text-center space-y-6">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6">Veterinaria</h1>
+
+      <!-- Verificar si el token existe en el localStorage -->
+      <script>
+        if (!localStorage.getItem("authToken")) {
+          window.location.href = "../index.html"; // Redirigir si no hay token
+        }
+      </script>
+
+      <!-- Botón para ingresar nueva mascota -->
+      <a
+        href="./addPet.html"
+        class="block w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 transition duration-300"
+      >
+        Ingresar Nueva Mascota
+      </a>
+
+      <!-- Botón para ver mascotas registradas -->
+      <a
+        href="./listPets.html"
+        class="block w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 transition duration-300"
+      >
+        Ver Mascotas Registradas
+      </a>
+
+      <!-- Botón "Cerrar sesión" -->
+      <button
+        id="logoutBtn"
+        class="w-full bg-red-500 text-white py-3 rounded-md hover:bg-red-600 transition duration-300"
+      >
+        Cerrar Sesión
+      </button>
     </div>
 
     <script>
-      // Verificar si el token existe, si no redirigir al login
-      if (!localStorage.getItem("authToken")) {
-        window.location.href = "../index.html";
-      }
-
-      // Cerrar sesión
+      // Función para cerrar sesión
       document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("authToken"); // Eliminar el token
         window.location.href = "../index.html"; // Redirigir al login
