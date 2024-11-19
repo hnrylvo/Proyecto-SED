@@ -3,13 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veterinaria - Iniciar Sesión</title>
+    <title>Veterinaria - Registro</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-8 rounded-xl shadow-md w-96">
-        <h2 class="text-2xl font-bold text-center mb-6">Iniciar Sesión</h2>
-        <form id="loginForm" class="space-y-4">
+        <h2 class="text-2xl font-bold text-center mb-6">Registro</h2>
+        <form id="registroForm" class="space-y-4">
+            <div>
+                <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre Completo</label>
+                <input 
+                    type="text" 
+                    id="nombre" 
+                    name="nombre" 
+                    required 
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                >
+                <span id="nombreError" class="text-red-500 text-sm hidden"></span>
+            </div>
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
                 <input 
@@ -32,36 +43,59 @@
                 >
                 <span id="passwordError" class="text-red-500 text-sm hidden"></span>
             </div>
+            <div>
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirmar Contraseña</label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    name="confirmPassword" 
+                    required 
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                >
+                <span id="confirmPasswordError" class="text-red-500 text-sm hidden"></span>
+            </div>
             <button 
                 type="submit" 
-                class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
+                class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300"
             >
-                Iniciar Sesión
+                Registrarse
             </button>
         </form>
         <p class="text-center mt-4 text-sm">
-            ¿No tienes cuenta? 
-            <a href="./views/register.html" class="text-blue-500 hover:underline">Regístrate</a>
+            ¿Ya tienes cuenta? 
+            <a href="../index.html" class="text-blue-500 hover:underline">Iniciar Sesión</a>
         </p>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const nombre = document.getElementById('nombre');
             const email = document.getElementById('email');
             const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            
+            const nombreError = document.getElementById('nombreError');
             const emailError = document.getElementById('emailError');
             const passwordError = document.getElementById('passwordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
 
             // Resetear errores
-            emailError.textContent = '';
-            passwordError.textContent = '';
-            emailError.classList.add('hidden');
-            passwordError.classList.add('hidden');
+            [nombreError, emailError, passwordError, confirmPasswordError].forEach(el => {
+                el.textContent = '';
+                el.classList.add('hidden');
+            });
 
             // Validaciones
             let isValid = true;
+
+            // Validación nombre
+            if (nombre.value.trim().length < 3) {
+                nombreError.textContent = 'Nombre debe tener al menos 3 caracteres';
+                nombreError.classList.remove('hidden');
+                isValid = false;
+            }
 
             // Validación email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -78,29 +112,36 @@
                 isValid = false;
             }
 
+            // Validación confirmación de contraseña
+            if (password.value !== confirmPassword.value) {
+                confirmPasswordError.textContent = 'Las contraseñas no coinciden';
+                confirmPasswordError.classList.remove('hidden');
+                isValid = false;
+            }
+
             if (isValid) {
                 // Preparado para llamada a API
-                const loginData = {
+                const registroData = {
+                    nombre: nombre.value,
                     email: email.value,
                     password: password.value
                 };
 
                 // Ejemplo de estructura para llamada a API
-                fetch('/api/login', {
+                fetch('/api/registro', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(loginData)
+                    body: JSON.stringify(registroData)
                 })
                 .then(response => response.json())
                 .then(data => {
                     // Manejar respuesta de la API
                     if (data.success) {
-                        window.location.href = '/dashboard';
+                        window.location.href = '/login';
                     } else {
-                        // Mostrar error de credenciales
-                        alert('Credenciales incorrectas');
+                        alert('Error en el registro');
                     }
                 })
                 .catch(error => {
