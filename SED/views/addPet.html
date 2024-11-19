@@ -1,193 +1,217 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Veterinaria - Nueva Mascota</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-8 rounded-xl shadow-md w-[500px]">
-        <h2 class="text-2xl font-bold text-center mb-6">Registrar Nueva Mascota</h2>
-        <form id="mascotaForm" class="space-y-4">
-            <div>
-                <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre de la Mascota</label>
-                <input 
-                    type="text" 
-                    id="nombre" 
-                    name="nombre" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="nombreError" class="text-red-500 text-sm hidden"></span>
-            </div>
+      <h2 class="text-2xl font-bold text-center mb-6">
+        Registrar Nueva Mascota
+      </h2>
+      <form id="mascotaForm" class="space-y-4">
+        <div>
+          <label for="nombre" class="block text-sm font-medium text-gray-700"
+            >Nombre de la Mascota</label
+          >
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          <span id="nombreError" class="text-red-500 text-sm hidden"></span>
+        </div>
 
-            <div>
-                <label for="especie" class="block text-sm font-medium text-gray-700">Especie</label>
-                <select 
-                    id="especie" 
-                    name="especie" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                    <option value="">Seleccionar Especie</option>
-                    <option value="perro">Perro</option>
-                    <option value="gato">Gato</option>
-                    <option value="ave">Ave</option>
-                    <option value="otro">Otro</option>
-                </select>
-                <span id="especieError" class="text-red-500 text-sm hidden"></span>
-            </div>
+        <div>
+          <label for="especie" class="block text-sm font-medium text-gray-700"
+            >Especie</label
+          >
+          <select
+            id="especie"
+            name="especie"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          >
+            <option value="">Seleccionar Especie</option>
+            <option value="perro">Perro</option>
+            <option value="gato">Gato</option>
+            <option value="ave">Ave</option>
+            <option value="otro">Otro</option>
+          </select>
+          <span id="especieError" class="text-red-500 text-sm hidden"></span>
+        </div>
 
-            <div>
-                <label for="raza" class="block text-sm font-medium text-gray-700">Raza</label>
-                <input 
-                    type="text" 
-                    id="raza" 
-                    name="raza" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="razaError" class="text-red-500 text-sm hidden"></span>
-            </div>
+        <div>
+          <label for="raza" class="block text-sm font-medium text-gray-700"
+            >Raza</label
+          >
+          <input
+            type="text"
+            id="raza"
+            name="raza"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          <span id="razaError" class="text-red-500 text-sm hidden"></span>
+        </div>
 
-            <div>
-                <label for="edad" class="block text-sm font-medium text-gray-700">Edad (años)</label>
-                <input 
-                    type="number" 
-                    id="edad" 
-                    name="edad" 
-                    min="0" 
-                    max="30" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="edadError" class="text-red-500 text-sm hidden"></span>
-            </div>
+        <div>
+          <label for="edad" class="block text-sm font-medium text-gray-700"
+            >Edad (años)</label
+          >
+          <input
+            type="number"
+            id="edad"
+            name="edad"
+            min="0"
+            max="30"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          <span id="edadError" class="text-red-500 text-sm hidden"></span>
+        </div>
 
-            <div>
-                <label for="peso" class="block text-sm font-medium text-gray-700">Peso (kg)</label>
-                <input 
-                    type="number" 
-                    id="peso" 
-                    name="peso" 
-                    step="0.1" 
-                    min="0" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="pesoError" class="text-red-500 text-sm hidden"></span>
-            </div>
+        <div>
+          <label for="peso" class="block text-sm font-medium text-gray-700"
+            >Peso (kg)</label
+          >
+          <input
+            type="number"
+            id="peso"
+            name="peso"
+            step="0.1"
+            min="0"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          <span id="pesoError" class="text-red-500 text-sm hidden"></span>
+        </div>
 
-            <div>
-                <label for="observaciones" class="block text-sm font-medium text-gray-700">Observaciones Médicas</label>
-                <textarea 
-                    id="observaciones" 
-                    name="observaciones" 
-                    rows="3" 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm resize-none"
-                ></textarea>
-            </div>
+        <div>
+          <label
+            for="observaciones"
+            class="block text-sm font-medium text-gray-700"
+            >Observaciones Médicas</label
+          >
+          <textarea
+            id="observaciones"
+            name="observaciones"
+            rows="3"
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm resize-none"
+          ></textarea>
+        </div>
 
-            <button 
-                type="submit" 
-                class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300"
-            >
-                Registrar Mascota
-            </button>
-        </form>
-        <a href="../views/home.html" class="block text-center mt-4 text-blue-500 hover:underline">Volver al Inicio</a>
+        <button
+          type="submit"
+          class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300"
+        >
+          Registrar Mascota
+        </button>
+      </form>
+      <a
+        href="../views/home.html"
+        class="block text-center mt-4 text-blue-500 hover:underline"
+        >Volver al Inicio</a
+      >
     </div>
 
     <script>
-        document.getElementById('mascotaForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const nombre = document.getElementById('nombre');
-            const especie = document.getElementById('especie');
-            const raza = document.getElementById('raza');
-            const edad = document.getElementById('edad');
-            const peso = document.getElementById('peso');
-            const observaciones = document.getElementById('observaciones');
-            
-            const nombreError = document.getElementById('nombreError');
-            const especieError = document.getElementById('especieError');
-            const razaError = document.getElementById('razaError');
-            const edadError = document.getElementById('edadError');
-            const pesoError = document.getElementById('pesoError');
+      document
+        .getElementById("mascotaForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
 
-            // Resetear errores
-            [nombreError, especieError, razaError, edadError, pesoError].forEach(el => {
-                el.textContent = '';
-                el.classList.add('hidden');
-            });
+          const nombre = document.getElementById("nombre");
+          const especie = document.getElementById("especie");
+          const raza = document.getElementById("raza");
+          const edad = document.getElementById("edad");
+          const peso = document.getElementById("peso");
+          const observaciones = document.getElementById("observaciones");
 
-            // Validaciones
-            let isValid = true;
+          const nombreError = document.getElementById("nombreError");
+          const especieError = document.getElementById("especieError");
+          const razaError = document.getElementById("razaError");
+          const edadError = document.getElementById("edadError");
+          const pesoError = document.getElementById("pesoError");
 
-            if (nombre.value.trim().length < 2) {
-                nombreError.textContent = 'Nombre debe tener al menos 2 caracteres';
-                nombreError.classList.remove('hidden');
-                isValid = false;
+          // Resetear errores
+          [nombreError, especieError, razaError, edadError, pesoError].forEach(
+            (el) => {
+              el.textContent = "";
+              el.classList.add("hidden");
             }
+          );
 
-            if (!especie.value) {
-                especieError.textContent = 'Debe seleccionar una especie';
-                especieError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Validaciones
+          let isValid = true;
 
-            if (raza.value.trim().length < 2) {
-                razaError.textContent = 'Raza debe tener al menos 2 caracteres';
-                razaError.classList.remove('hidden');
-                isValid = false;
-            }
+          if (nombre.value.trim().length < 2) {
+            nombreError.textContent = "Nombre debe tener al menos 2 caracteres";
+            nombreError.classList.remove("hidden");
+            isValid = false;
+          }
 
-            if (edad.value < 0 || edad.value > 30) {
-                edadError.textContent = 'Edad debe estar entre 0 y 30 años';
-                edadError.classList.remove('hidden');
-                isValid = false;
-            }
+          if (!especie.value) {
+            especieError.textContent = "Debe seleccionar una especie";
+            especieError.classList.remove("hidden");
+            isValid = false;
+          }
 
-            if (peso.value <= 0) {
-                pesoError.textContent = 'Peso debe ser mayor a 0';
-                pesoError.classList.remove('hidden');
-                isValid = false;
-            }
+          if (raza.value.trim().length < 2) {
+            razaError.textContent = "Raza debe tener al menos 2 caracteres";
+            razaError.classList.remove("hidden");
+            isValid = false;
+          }
 
-            if (isValid) {
-                // Preparado para llamada a API
-                const mascotaData = {
-                    nombre: nombre.value,
-                    especie: especie.value,
-                    raza: raza.value,
-                    edad: parseFloat(edad.value),
-                    peso: parseFloat(peso.value),
-                    observaciones: observaciones.value
-                };
+          if (edad.value < 0 || edad.value > 30) {
+            edadError.textContent = "Edad debe estar entre 0 y 30 años";
+            edadError.classList.remove("hidden");
+            isValid = false;
+          }
 
-                // Ejemplo de estructura para llamada a API
-                fetch('/api/mascotas', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(mascotaData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Mascota registrada exitosamente');
-                        window.location.href = 'index.html';
-                    } else {
-                        alert('Error al registrar mascota');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
+          if (peso.value <= 0) {
+            pesoError.textContent = "Peso debe ser mayor a 0";
+            pesoError.classList.remove("hidden");
+            isValid = false;
+          }
+
+          if (isValid) {
+            // Preparado para llamada a API
+            const mascotaData = {
+              nombre: nombre.value,
+              especie: especie.value,
+              raza: raza.value,
+              edad: parseFloat(edad.value),
+              peso: parseFloat(peso.value),
+              observaciones: observaciones.value,
+            };
+
+            // Ejemplo de estructura para llamada a API
+            fetch("/api/mascotas", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(mascotaData),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.success) {
+                  alert("Mascota registrada exitosamente");
+                  window.location.href = "index.html";
+                } else {
+                  alert("Error al registrar mascota");
+                }
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+          }
         });
     </script>
-</body>
+  </body>
 </html>

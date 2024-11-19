@@ -1,154 +1,179 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Veterinaria - Registro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-8 rounded-xl shadow-md w-96">
-        <h2 class="text-2xl font-bold text-center mb-6">Registro</h2>
-        <form id="registroForm" class="space-y-4">
-            <div>
-                <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre Completo</label>
-                <input 
-                    type="text" 
-                    id="nombre" 
-                    name="nombre" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="nombreError" class="text-red-500 text-sm hidden"></span>
-            </div>
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="emailError" class="text-red-500 text-sm hidden"></span>
-            </div>
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="passwordError" class="text-red-500 text-sm hidden"></span>
-            </div>
-            <div>
-                <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirmar Contraseña</label>
-                <input 
-                    type="password" 
-                    id="confirmPassword" 
-                    name="confirmPassword" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="confirmPasswordError" class="text-red-500 text-sm hidden"></span>
-            </div>
-            <button 
-                type="submit" 
-                class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300"
-            >
-                Registrarse
-            </button>
-        </form>
-        <p class="text-center mt-4 text-sm">
-            ¿Ya tienes cuenta? 
-            <a href="../index.html" class="text-blue-500 hover:underline">Iniciar Sesión</a>
-        </p>
+      <h2 class="text-2xl font-bold text-center mb-6">Registro</h2>
+      <form id="registroForm" class="space-y-4">
+        <div>
+          <label for="nombre" class="block text-sm font-medium text-gray-700"
+            >Nombre Completo</label
+          >
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          <span id="nombreError" class="text-red-500 text-sm hidden"></span>
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700"
+            >Correo Electrónico</label
+          >
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          <span id="emailError" class="text-red-500 text-sm hidden"></span>
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700"
+            >Contraseña</label
+          >
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          <span id="passwordError" class="text-red-500 text-sm hidden"></span>
+        </div>
+        <div>
+          <label
+            for="confirmPassword"
+            class="block text-sm font-medium text-gray-700"
+            >Confirmar Contraseña</label
+          >
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          <span
+            id="confirmPasswordError"
+            class="text-red-500 text-sm hidden"
+          ></span>
+        </div>
+        <button
+          type="submit"
+          class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300"
+        >
+          Registrarse
+        </button>
+      </form>
+      <p class="text-center mt-4 text-sm">
+        ¿Ya tienes cuenta?
+        <a href="../index.html" class="text-blue-500 hover:underline"
+          >Iniciar Sesión</a
+        >
+      </p>
     </div>
 
     <script>
-        document.getElementById('registroForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const nombre = document.getElementById('nombre');
-            const email = document.getElementById('email');
-            const password = document.getElementById('password');
-            const confirmPassword = document.getElementById('confirmPassword');
-            
-            const nombreError = document.getElementById('nombreError');
-            const emailError = document.getElementById('emailError');
-            const passwordError = document.getElementById('passwordError');
-            const confirmPasswordError = document.getElementById('confirmPasswordError');
+      document
+        .getElementById("registroForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
 
-            // Resetear errores
-            [nombreError, emailError, passwordError, confirmPasswordError].forEach(el => {
-                el.textContent = '';
-                el.classList.add('hidden');
-            });
+          const nombre = document.getElementById("nombre");
+          const email = document.getElementById("email");
+          const password = document.getElementById("password");
+          const confirmPassword = document.getElementById("confirmPassword");
 
-            // Validaciones
-            let isValid = true;
+          const nombreError = document.getElementById("nombreError");
+          const emailError = document.getElementById("emailError");
+          const passwordError = document.getElementById("passwordError");
+          const confirmPasswordError = document.getElementById(
+            "confirmPasswordError"
+          );
 
-            // Validación nombre
-            if (nombre.value.trim().length < 3) {
-                nombreError.textContent = 'Nombre debe tener al menos 3 caracteres';
-                nombreError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Resetear errores
+          [
+            nombreError,
+            emailError,
+            passwordError,
+            confirmPasswordError,
+          ].forEach((el) => {
+            el.textContent = "";
+            el.classList.add("hidden");
+          });
 
-            // Validación email
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email.value)) {
-                emailError.textContent = 'Correo electrónico inválido';
-                emailError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Validaciones
+          let isValid = true;
 
-            // Validación contraseña
-            if (password.value.length < 8) {
-                passwordError.textContent = 'La contraseña debe tener al menos 8 caracteres';
-                passwordError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Validación nombre
+          if (nombre.value.trim().length < 3) {
+            nombreError.textContent = "Nombre debe tener al menos 3 caracteres";
+            nombreError.classList.remove("hidden");
+            isValid = false;
+          }
 
-            // Validación confirmación de contraseña
-            if (password.value !== confirmPassword.value) {
-                confirmPasswordError.textContent = 'Las contraseñas no coinciden';
-                confirmPasswordError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Validación email
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email.value)) {
+            emailError.textContent = "Correo electrónico inválido";
+            emailError.classList.remove("hidden");
+            isValid = false;
+          }
 
-            if (isValid) {
-                // Preparado para llamada a API
-                const registroData = {
-                    nombre: nombre.value,
-                    email: email.value,
-                    password: password.value
-                };
+          // Validación contraseña
+          if (password.value.length < 8) {
+            passwordError.textContent =
+              "La contraseña debe tener al menos 8 caracteres";
+            passwordError.classList.remove("hidden");
+            isValid = false;
+          }
 
-                // Ejemplo de estructura para llamada a API
-                fetch('/api/registro', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(registroData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Manejar respuesta de la API
-                    if (data.success) {
-                        window.location.href = '/login';
-                    } else {
-                        alert('Error en el registro');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
+          // Validación confirmación de contraseña
+          if (password.value !== confirmPassword.value) {
+            confirmPasswordError.textContent = "Las contraseñas no coinciden";
+            confirmPasswordError.classList.remove("hidden");
+            isValid = false;
+          }
+
+          if (isValid) {
+            // Preparado para llamada a API
+            const registroData = {
+              nombre: nombre.value,
+              email: email.value,
+              password: password.value,
+            };
+
+            // Ejemplo de estructura para llamada a API
+            fetch("http://localhost:3000/auth/register", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(registroData),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                // Manejar respuesta de la API
+                if (data.success) {
+                  window.location.href = "../index.html";
+                } else {
+                  alert("Error en el registro");
+                }
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+          }
         });
     </script>
-</body>
+  </body>
 </html>

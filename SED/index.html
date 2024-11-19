@@ -1,113 +1,122 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Veterinaria - Iniciar Sesión</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-8 rounded-xl shadow-md w-96">
-        <h2 class="text-2xl font-bold text-center mb-6">Iniciar Sesión</h2>
-        <form id="loginForm" class="space-y-4">
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="emailError" class="text-red-500 text-sm hidden"></span>
-            </div>
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="passwordError" class="text-red-500 text-sm hidden"></span>
-            </div>
-            <button 
-                type="submit" 
-                class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
-            >
-                Iniciar Sesión
-            </button>
-        </form>
-        <p class="text-center mt-4 text-sm">
-            ¿No tienes cuenta? 
-            <a href="./views/register.html" class="text-blue-500 hover:underline">Regístrate</a>
-        </p>
+      <h2 class="text-2xl font-bold text-center mb-6">Iniciar Sesión</h2>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700"
+            >Correo Electrónico</label
+          >
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          <span id="emailError" class="text-red-500 text-sm hidden"></span>
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700"
+            >Contraseña</label
+          >
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+          <span id="passwordError" class="text-red-500 text-sm hidden"></span>
+        </div>
+        <button
+          type="submit"
+          class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
+        >
+          Iniciar Sesión
+        </button>
+      </form>
+      <p class="text-center mt-4 text-sm">
+        ¿No tienes cuenta?
+        <a href="./views/register.html" class="text-blue-500 hover:underline"
+          >Regístrate</a
+        >
+      </p>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email');
-            const password = document.getElementById('password');
-            const emailError = document.getElementById('emailError');
-            const passwordError = document.getElementById('passwordError');
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
 
-            // Resetear errores
-            emailError.textContent = '';
-            passwordError.textContent = '';
-            emailError.classList.add('hidden');
-            passwordError.classList.add('hidden');
+          const email = document.getElementById("email");
+          const password = document.getElementById("password");
+          const emailError = document.getElementById("emailError");
+          const passwordError = document.getElementById("passwordError");
 
-            // Validaciones
-            let isValid = true;
+          // Resetear errores
+          emailError.textContent = "";
+          passwordError.textContent = "";
+          emailError.classList.add("hidden");
+          passwordError.classList.add("hidden");
 
-            // Validación email
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email.value)) {
-                emailError.textContent = 'Correo electrónico inválido';
-                emailError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Validaciones
+          let isValid = true;
 
-            // Validación contraseña
-            if (password.value.length < 8) {
-                passwordError.textContent = 'La contraseña debe tener al menos 8 caracteres';
-                passwordError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Validación email
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email.value)) {
+            emailError.textContent = "Correo electrónico inválido";
+            emailError.classList.remove("hidden");
+            isValid = false;
+          }
 
-            if (isValid) {
-                // Preparado para llamada a API
-                const loginData = {
-                    email: email.value,
-                    password: password.value
-                };
+          // Validación contraseña
+          if (password.value.length < 8) {
+            passwordError.textContent =
+              "La contraseña debe tener al menos 8 caracteres";
+            passwordError.classList.remove("hidden");
+            isValid = false;
+          }
 
-                // Ejemplo de estructura para llamada a API
-                fetch('/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(loginData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Manejar respuesta de la API
-                    if (data.success) {
-                        window.location.href = '/dashboard';
-                    } else {
-                        // Mostrar error de credenciales
-                        alert('Credenciales incorrectas');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
+          if (isValid) {
+            // Preparado para llamada a API
+            const loginData = {
+              email: email.value,
+              password: password.value,
+            };
+
+            // Ejemplo de estructura para llamada a API
+            fetch("http://localhost:3000/auth/login", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(loginData),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                // Manejar respuesta de la API
+                if (data.success) {
+                  window.location.href = "/views/home.html";
+                } else {
+                  // Mostrar error de credenciales
+                  alert("Credenciales incorrectas");
+                }
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+          }
         });
     </script>
-</body>
+  </body>
 </html>
