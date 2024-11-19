@@ -13,9 +13,9 @@
       </h2>
       <form id="mascotaForm" class="space-y-4">
         <div>
-          <label for="nombre" class="block text-sm font-medium text-gray-700"
-            >Nombre de la Mascota</label
-          >
+          <label for="nombre" class="block text-sm font-medium text-gray-700">
+            Nombre de la Mascota
+          </label>
           <input
             type="text"
             id="nombre"
@@ -27,9 +27,9 @@
         </div>
 
         <div>
-          <label for="especie" class="block text-sm font-medium text-gray-700"
-            >Especie</label
-          >
+          <label for="especie" class="block text-sm font-medium text-gray-700">
+            Especie
+          </label>
           <select
             id="especie"
             name="especie"
@@ -46,9 +46,9 @@
         </div>
 
         <div>
-          <label for="raza" class="block text-sm font-medium text-gray-700"
-            >Raza</label
-          >
+          <label for="raza" class="block text-sm font-medium text-gray-700">
+            Raza
+          </label>
           <input
             type="text"
             id="raza"
@@ -60,9 +60,9 @@
         </div>
 
         <div>
-          <label for="edad" class="block text-sm font-medium text-gray-700"
-            >Edad (años)</label
-          >
+          <label for="edad" class="block text-sm font-medium text-gray-700">
+            Edad (años)
+          </label>
           <input
             type="number"
             id="edad"
@@ -76,9 +76,9 @@
         </div>
 
         <div>
-          <label for="peso" class="block text-sm font-medium text-gray-700"
-            >Peso (kg)</label
-          >
+          <label for="peso" class="block text-sm font-medium text-gray-700">
+            Peso (kg)
+          </label>
           <input
             type="number"
             id="peso"
@@ -95,8 +95,9 @@
           <label
             for="observaciones"
             class="block text-sm font-medium text-gray-700"
-            >Observaciones Médicas</label
           >
+            Observaciones Médicas
+          </label>
           <textarea
             id="observaciones"
             name="observaciones"
@@ -122,94 +123,62 @@
     <script>
       document
         .getElementById("mascotaForm")
-        .addEventListener("submit", function (e) {
+        .addEventListener("submit", async function (e) {
           e.preventDefault();
 
-          const nombre = document.getElementById("nombre");
-          const especie = document.getElementById("especie");
-          const raza = document.getElementById("raza");
-          const edad = document.getElementById("edad");
-          const peso = document.getElementById("peso");
-          const observaciones = document.getElementById("observaciones");
+          // Obtener valores del formulario
+          const nombre = document.getElementById("nombre").value.trim();
+          const especie = document.getElementById("especie").value;
+          const raza = document.getElementById("raza").value.trim();
+          const edad = parseInt(document.getElementById("edad").value, 10);
+          const peso = parseFloat(document.getElementById("peso").value);
+          const observaciones = document
+            .getElementById("observaciones")
+            .value.trim();
 
-          const nombreError = document.getElementById("nombreError");
-          const especieError = document.getElementById("especieError");
-          const razaError = document.getElementById("razaError");
-          const edadError = document.getElementById("edadError");
-          const pesoError = document.getElementById("pesoError");
-
-          // Resetear errores
-          [nombreError, especieError, razaError, edadError, pesoError].forEach(
-            (el) => {
-              el.textContent = "";
-              el.classList.add("hidden");
-            }
-          );
-
-          // Validaciones
-          let isValid = true;
-
-          if (nombre.value.trim().length < 2) {
-            nombreError.textContent = "Nombre debe tener al menos 2 caracteres";
-            nombreError.classList.remove("hidden");
-            isValid = false;
+          // Validaciones básicas
+          if (
+            nombre.length < 2 ||
+            !especie ||
+            raza.length < 2 ||
+            isNaN(edad) ||
+            edad < 0 ||
+            edad > 30 ||
+            isNaN(peso) ||
+            peso <= 0
+          ) {
+            alert("Por favor, revisa los campos ingresados.");
+            return;
           }
 
-          if (!especie.value) {
-            especieError.textContent = "Debe seleccionar una especie";
-            especieError.classList.remove("hidden");
-            isValid = false;
-          }
+          const mascotaData = {
+            name: nombre,
+            species: especie,
+            breed: raza,
+            age: edad,
+            weight: peso,
+            medicalNotes: observaciones,
+          };
 
-          if (raza.value.trim().length < 2) {
-            razaError.textContent = "Raza debe tener al menos 2 caracteres";
-            razaError.classList.remove("hidden");
-            isValid = false;
-          }
-
-          if (edad.value < 0 || edad.value > 30) {
-            edadError.textContent = "Edad debe estar entre 0 y 30 años";
-            edadError.classList.remove("hidden");
-            isValid = false;
-          }
-
-          if (peso.value <= 0) {
-            pesoError.textContent = "Peso debe ser mayor a 0";
-            pesoError.classList.remove("hidden");
-            isValid = false;
-          }
-
-          if (isValid) {
-            // Preparado para llamada a API
-            const mascotaData = {
-              nombre: nombre.value,
-              especie: especie.value,
-              raza: raza.value,
-              edad: parseFloat(edad.value),
-              peso: parseFloat(peso.value),
-              observaciones: observaciones.value,
-            };
-
-            // Ejemplo de estructura para llamada a API
-            fetch("/api/mascotas", {
+          try {
+            const response = await fetch("/api/mascotas", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify(mascotaData),
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                if (data.success) {
-                  alert("Mascota registrada exitosamente");
-                  window.location.href = "index.html";
-                } else {
-                  alert("Error al registrar mascota");
-                }
-              })
-              .catch((error) => {
-                console.error("Error:", error);
-              });
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+              alert("Mascota registrada exitosamente");
+              window.location.href = "../views/home.html";
+            } else {
+              alert(data.error || "Error al registrar la mascota.");
+            }
+          } catch (error) {
+            console.error("Error al registrar mascota:", error);
+            alert("Error en el servidor. Intenta nuevamente.");
           }
         });
     </script>

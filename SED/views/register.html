@@ -152,7 +152,6 @@
               password: password.value,
             };
 
-            // Ejemplo de estructura para llamada a API
             fetch("http://localhost:3000/auth/register", {
               method: "POST",
               headers: {
@@ -160,17 +159,23 @@
               },
               body: JSON.stringify(registroData),
             })
-              .then((response) => response.json())
-              .then((data) => {
-                // Manejar respuesta de la API
-                if (data.success) {
-                  window.location.href = "../index.html";
-                } else {
-                  alert("Error en el registro");
+              .then((response) => {
+                // Verificar estado HTTP
+                if (!response.ok) {
+                  if (response.status === 400) {
+                    throw new Error("El correo ya está registrado");
+                  }
+                  throw new Error("Error en el servidor");
                 }
+                return response.json();
+              })
+              .then((data) => {
+                // Redirigir tras registro exitoso
+                window.location.href = "../index.html";
               })
               .catch((error) => {
-                console.error("Error:", error);
+                // Mostrar error al usuario
+                alert(error.message);
               });
           }
         });
