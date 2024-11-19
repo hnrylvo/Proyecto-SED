@@ -121,7 +121,7 @@
             isValid = false;
           }
 
-          // Validación email
+          // Validación correo
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(email.value)) {
             emailError.textContent = "Correo electrónico inválido";
@@ -145,37 +145,28 @@
           }
 
           if (isValid) {
-            // Preparado para llamada a API
-            const registroData = {
+            // Preparado para llamar API de registro
+            const userData = {
               nombre: nombre.value,
               email: email.value,
               password: password.value,
             };
 
+            // Llamada a la API de registro
             fetch("http://localhost:3000/auth/register", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(registroData),
+              body: JSON.stringify(userData),
             })
-              .then((response) => {
-                // Verificar estado HTTP
-                if (!response.ok) {
-                  if (response.status === 400) {
-                    throw new Error("El correo ya está registrado");
-                  }
-                  throw new Error("Error en el servidor");
-                }
-                return response.json();
-              })
+              .then((response) => response.json())
               .then((data) => {
-                // Redirigir tras registro exitoso
-                window.location.href = "../index.html";
+                alert("Registro exitoso, por favor inicia sesión.");
+                window.location.href = "../index.html"; // Redirige al login
               })
               .catch((error) => {
-                // Mostrar error al usuario
-                alert(error.message);
+                alert("Error en el registro, por favor intenta nuevamente.");
               });
           }
         });

@@ -113,6 +113,9 @@
                 return response.json();
               })
               .then((data) => {
+                // Guardar el token en el localStorage
+                localStorage.setItem("authToken", data.token);
+
                 // Redirigir si el login es exitoso
                 window.location.href = "./views/home.html";
               })
