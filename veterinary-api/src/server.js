@@ -1,17 +1,26 @@
 const http = require("http");
 const { handleRequest } = require("./routes");
 const { connectDB } = require("./utils/database");
-const morgan = require('morgan');
-const cors = require('cors'); // Requiere el paquete cors
+const morgan = require("morgan");
 
 const PORT = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
-  cors()(req, res, () => {
-    // Usar morgan como middleware para registrar las solicitudes
-    morgan('dev')(req, res, () => {
-      handleRequest(req, res);
-    });
+  // CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500"); // Tu origen frontend
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  // Handle preflight requests
+  if (req.method === "OPTIONS") {
+    res.statusCode = 204;
+    return res.end();
+  }
+
+  // Logging with morgan
+  morgan("dev")(req, res, () => {
+    handleRequest(req, res);
   });
 });
 

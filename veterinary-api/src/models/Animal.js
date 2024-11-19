@@ -1,12 +1,11 @@
-// models/Animal.js
 class Animal {
     constructor(db) {
         this.collection = db.collection('animals');
     }
-
-    async create(animalData) {
-        return await this.collection.insertOne(animalData);
+ 
+    async findAll() {
+        return await this.collection.find({}).toArray();
     }
-}
+ }
 
 module.exports = Animal;

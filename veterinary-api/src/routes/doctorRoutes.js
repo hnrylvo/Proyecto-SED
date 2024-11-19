@@ -2,7 +2,14 @@ const { authenticateToken, checkRole } = require("../auth/middleware");
 const doctorController = require("../controllers/doctorController");
 
 const doctorRoutes = {
-  "/doctor/animals": {
+  "/doctor/animals/all": {
+    GET: [
+      authenticateToken,
+      checkRole(["doctor"]),
+      doctorController.getAllAnimals,
+    ],
+  },
+  "/doctor/animals/search": {
     GET: [
       authenticateToken,
       checkRole(["doctor"]),

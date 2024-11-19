@@ -1,7 +1,11 @@
 const { getDB } = require("../utils/database");
 const { encrypt } = require("../auth/encryption");
 const { User, Doctor } = require("../models");
-const { authenticateToken, logout , handleRequest} = require("../auth/middleware");
+const {
+  authenticateToken,
+  logout,
+  handleRequest,
+} = require("../auth/middleware");
 
 const authRoutes = {
   "/auth/register": {
@@ -61,9 +65,16 @@ const authRoutes = {
         // Set cookie
         res.setHeader(
           "Set-Cookie",
-          `token=${token}; HttpOnly; Secure; Path=/; Max-Age=${24 * 60 * 60}`
+          `token=${token}; Path=/; Max-Age=${24 * 60 * 60}; SameSite=Lax`
         );
-        res.end(JSON.stringify({ role: account.role }));
+
+        // Enviar token y role en el response body
+        res.end(
+          JSON.stringify({
+            token: token,
+            role: account.role,
+          })
+        );
       } catch (error) {
         res.statusCode = 500;
         res.end(JSON.stringify({ error: "Internal server error" }));
@@ -74,7 +85,7 @@ const authRoutes = {
     POST: async (req, res) => {
       // Procesa los middlewares manualmente
       await handleRequest(req, res, [logout]);
-  
+
       // Si aún no se ha enviado la respuesta, envía un mensaje de éxito
       if (!res.writableEnded) {
         res.statusCode = 200;

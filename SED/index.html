@@ -52,40 +52,25 @@
     </div>
 
     <script>
-      // Función para establecer la cookie
-      function setCookie(name, value, days) {
-        const expires = new Date(Date.now() + days * 864e5).toUTCString(); // Caducidad en días
-        document.cookie = `${name}=${value}; expires=${expires}; path=/; Secure; HttpOnly`;
-      }
-    
-      // Función para obtener el valor de la cookie
-      function getCookie(name) {
-        return document.cookie.split('; ').reduce((r, v) => {
-          const parts = v.split('=');
-          if (parts[0] === name) r = parts[1];
-          return r;
-        }, '');
-      }
-    
       document
         .getElementById("loginForm")
         .addEventListener("submit", function (e) {
           e.preventDefault();
-    
+
           const email = document.getElementById("email");
           const password = document.getElementById("password");
           const emailError = document.getElementById("emailError");
           const passwordError = document.getElementById("passwordError");
-    
+
           // Resetear errores
           emailError.textContent = "";
           passwordError.textContent = "";
           emailError.classList.add("hidden");
           passwordError.classList.add("hidden");
-    
+
           // Validaciones
           let isValid = true;
-    
+
           // Validación email
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(email.value)) {
@@ -93,7 +78,7 @@
             emailError.classList.remove("hidden");
             isValid = false;
           }
-    
+
           // Validación contraseña
           if (password.value.length < 8) {
             passwordError.textContent =
@@ -101,24 +86,24 @@
             passwordError.classList.remove("hidden");
             isValid = false;
           }
-    
+
           if (isValid) {
             // Preparado para llamada a API
             const loginData = {
               email: email.value,
               password: password.value,
             };
-    
+
             // Llamada a la API
             fetch("http://localhost:3000/auth/login", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
+              credentials: "include", // Importante para recibir cookies
               body: JSON.stringify(loginData),
             })
               .then((response) => {
-                // Verificar el estado HTTP
                 if (!response.ok) {
                   if (response.status === 401) {
                     throw new Error("Credenciales incorrectas");
@@ -128,19 +113,18 @@
                 return response.json();
               })
               .then((data) => {
-                // Guardar el token en la cookie
-                setCookie('authToken', data.token, 1); // Guardamos el token por 1 día
-    
-                // Redirigir si el login es exitoso
+                localStorage.setItem("authToken", data.token);
+     
+                document.cookie = `token=${data.token}; path=/; max-age=${
+                  24 * 60 * 60
+                }; SameSite=Lax`;
                 window.location.href = "./views/home.html";
               })
               .catch((error) => {
-                // Mostrar el error al usuario
                 alert(error.message);
               });
           }
         });
     </script>
-    
   </body>
 </html>
