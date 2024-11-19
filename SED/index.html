@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <div id="app"></div>
+
+    <!-- Scripts de las vistas -->
+    <script src="./views/login.js"></script>
+    <script src="./views/register.js"></script>
+    <script src="./views/notFound.js"></script>
+    <script src="./views/home.js"></script>
+    <script src="./views/addPet.js"></script>
+    <script src="router.js"></script>
+
+    <!-- Script de inicialización -->
+    <script>
+      // Configuración de rutas
+      const routes = [
+        { path: "^/login$", view: LoginView },
+        { path: "^/register$", view: RegisterView },
+        { path: "^/", view: HomeView },
+        { path: "^/add-pet$", view: AddPetView },
+        { path: "*", view: NotFoundView },
+      ];
+
+      // Inicializar el router
+      const router = new Router(routes);
+
+      // Funciones de validación y manejo de formularios
+      const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      };
+
+      const validatePassword = (password) => {
+        return (
+          password.length >= 8 &&
+          /[A-Z]/.test(password) &&
+          /[a-z]/.test(password) &&
+          /[0-9]/.test(password) &&
+          /[^A-Za-z0-9]/.test(password)
+        );
+      };
+
+      const validateName = (name) => {
+        return name.length >= 3 && /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name);
+      };
+
+      const showError = (elementId, message) => {
+        const errorElement = document.getElementById(elementId);
+        if (errorElement) {
+          errorElement.textContent = message;
+          errorElement.classList.remove("hidden");
+        }
+      };
+
+      const hideError = (elementId) => {
+        const errorElement = document.getElementById(elementId);
+        if (errorElement) {
+          errorElement.classList.add("hidden");
+        }
+      };
+
+      // Manejadores de formularios
+      async function handleLogin(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("loginEmail")?.value;
+        const password = document.getElementById("loginPassword")?.value;
+
+        if (!email || !password) return;
+
+        let isValid = true;
+
+        if (!validateEmail(email)) {
+          showError(
+            "loginEmailError",
+            "Por favor, ingrese un correo electrónico válido"
+          );
+          isValid = false;
+        } else {
+          hideError("loginEmailError");
+        }
+
+        if (!validatePassword(password)) {
+          showError(
+            "loginPasswordError",
+            "La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales"
+          );
+          isValid = false;
+        } else {
+          hideError("loginPasswordError");
+        }
+
+        if (isValid) {
+          try {
+            const response = await fetch("https://api.veterinaria.com/login", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ email, password }),
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              localStorage.setItem("token", data.token);
+              window.location.href = "/home";
+            } else {
+              const error = await response.json();
+              showError(
+                "loginPasswordError",
+                error.message || "Error al iniciar sesión"
+              );
+            }
+          } catch (error) {
+            showError(
+              "loginPasswordError",
+              "Error de conexión. Por favor, intente nuevamente"
+            );
+          }
+        }
+      }
+
+      async function handleRegister(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("registerName")?.value;
+        const email = document.getElementById("registerEmail")?.value;
+        const password = document.getElementById("registerPassword")?.value;
+        const confirmPassword = document.getElementById(
+          "registerConfirmPassword"
+        )?.value;
+
+        if (!name || !email || !password || !confirmPassword) return;
+
+        let isValid = true;
+
+        if (!validateName(name)) {
+          showError(
+            "registerNameError",
+            "Por favor, ingrese un nombre válido (solo letras y espacios)"
+          );
+          isValid = false;
+        } else {
+          hideError("registerNameError");
+        }
+
+        if (!validateEmail(email)) {
+          showError(
+            "registerEmailError",
+            "Por favor, ingrese un correo electrónico válido"
+          );
+          isValid = false;
+        } else {
+          hideError("registerEmailError");
+        }
+
+        if (!validatePassword(password)) {
+          showError(
+            "registerPasswordError",
+            "La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales"
+          );
+          isValid = false;
+        } else {
+          hideError("registerPasswordError");
+        }
+
+        if (password !== confirmPassword) {
+          showError(
+            "registerConfirmPasswordError",
+            "Las contraseñas no coinciden"
+          );
+          isValid = false;
+        } else {
+          hideError("registerConfirmPasswordError");
+        }
+
+        if (isValid) {
+          try {
+            const response = await fetch(
+              "https://api.veterinaria.com/register",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name, email, password }),
+              }
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              localStorage.setItem("token", data.token);
+              window.location.href = "/home";
+            } else {
+              const error = await response.json();
+              showError(
+                "registerPasswordError",
+                error.message || "Error al registrarse"
+              );
+            }
+          } catch (error) {
+            showError(
+              "registerPasswordError",
+              "Error de conexión. Por favor, intente nuevamente"
+            );
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
