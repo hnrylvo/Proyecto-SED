@@ -11,7 +11,7 @@
       <h2 class="text-2xl font-bold text-center mb-6">
         Registrar Nueva Mascota
       </h2>
-      <form id="mascotaForm" class="space-y-4">
+      <form id="mascotaForm" class="space-y-4" novalidate>
         <div>
           <label for="nombre" class="block text-sm font-medium text-gray-700">
             Nombre de la Mascota
@@ -21,6 +21,9 @@
             id="nombre"
             name="nombre"
             required
+            minlength="2"
+            maxlength="50"
+            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
           <span id="nombreError" class="text-red-500 text-sm hidden"></span>
@@ -54,6 +57,9 @@
             id="raza"
             name="raza"
             required
+            minlength="2"
+            maxlength="50"
+            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
           <span id="razaError" class="text-red-500 text-sm hidden"></span>
@@ -85,6 +91,7 @@
             name="peso"
             step="0.1"
             min="0"
+            max="500"
             required
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
@@ -102,6 +109,7 @@
             id="observaciones"
             name="observaciones"
             rows="3"
+            maxlength="500"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm resize-none"
           ></textarea>
         </div>
@@ -121,63 +129,111 @@
     </div>
 
     <script>
+      // Sanitize input to prevent XSS
+      function sanitizeInput(input) {
+        const div = document.createElement("div");
+        div.textContent = input;
+        return div.innerHTML;
+      }
+
+      // Advanced input validation function
+      function validateInput(input, type) {
+        switch (type) {
+          case "nombre":
+          case "raza":
+            return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/.test(input);
+          case "edad":
+            return !isNaN(input) && input >= 0 && input <= 30;
+          case "peso":
+            return !isNaN(input) && input > 0 && input <= 500;
+          case "especie":
+            return ["perro", "gato", "ave", "otro"].includes(input);
+          default:
+            return true;
+        }
+      }
+
       document
         .getElementById("mascotaForm")
         .addEventListener("submit", async function (e) {
           e.preventDefault();
 
-          // Obtener valores del formulario
-          const nombre = document.getElementById("nombre").value.trim();
-          const especie = document.getElementById("especie").value;
-          const raza = document.getElementById("raza").value.trim();
-          const edad = parseInt(document.getElementById("edad").value, 10);
-          const peso = parseFloat(document.getElementById("peso").value);
+          let isValid = true;
+          const formElements = ["nombre", "especie", "raza", "edad", "peso"];
+
+          // Reset previous error messages
+          formElements.forEach((element) => {
+            const errorSpan = document.getElementById(`${element}Error`);
+            errorSpan.textContent = "";
+            errorSpan.classList.add("hidden");
+          });
+
+          // Validate and sanitize inputs
+          const mascotaData = {};
+          formElements.forEach((element) => {
+            const inputElement = document.getElementById(element);
+            const value = inputElement.value.trim();
+
+            if (!validateInput(value, element)) {
+              const errorSpan = document.getElementById(`${element}Error`);
+              errorSpan.textContent = `Por favor, ingrese un ${element} válido`;
+              errorSpan.classList.remove("hidden");
+              isValid = false;
+            } else {
+              mascotaData[
+                element === "nombre"
+                  ? "name"
+                  : element === "raza"
+                  ? "breed"
+                  : element === "especie"
+                  ? "species"
+                  : element === "edad"
+                  ? "age"
+                  : "weight"
+              ] =
+                element === "edad"
+                  ? parseInt(value, 10)
+                  : element === "peso"
+                  ? parseFloat(value)
+                  : sanitizeInput(value);
+            }
+          });
+
+          // Sanitize optional observations
           const observaciones = document
             .getElementById("observaciones")
             .value.trim();
+          mascotaData.medicalNotes = sanitizeInput(observaciones);
 
-          // Validaciones básicas
-          if (
-            nombre.length < 2 ||
-            !especie ||
-            raza.length < 2 ||
-            isNaN(edad) ||
-            edad < 0 ||
-            edad > 30 ||
-            isNaN(peso) ||
-            peso <= 0
-          ) {
-            alert("Por favor, revisa los campos ingresados.");
-            return;
-          }
-
-          const mascotaData = {
-            name: nombre,
-            species: especie,
-            breed: raza,
-            age: edad,
-            weight: peso,
-            medicalNotes: observaciones,
-          };
+          if (!isValid) return;
 
           try {
+            // Use more secure token retrieval
             const token = document.cookie
               .split("; ")
               .find((row) => row.startsWith("token="))
               ?.split("=")[1];
+
+            if (!token) {
+              alert(
+                "No se encontró una sesión válida. Por favor, inicie sesión."
+              );
+              return;
+            }
 
             const response = await fetch("http://localhost:3000/user/animals", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
+                "X-Requested-With": "XMLHttpRequest", // CSRF protection
               },
-              credentials: "include",
+              credentials: "same-origin", // More secure credentials handling
               body: JSON.stringify(mascotaData),
             });
 
             const data = await response.json();
-            console.log("Response data:", data);
+
             if (response.ok) {
               alert("Mascota registrada exitosamente");
               window.location.href = "../views/home.html";
@@ -185,7 +241,7 @@
               alert(data.error || "Error al registrar la mascota.");
             }
           } catch (error) {
-            console.error("Error completo:", error);
+            console.error("Error:", error);
             alert("Error en el servidor. Intenta nuevamente.");
           }
         });
