@@ -114,10 +114,12 @@
               })
               .then((data) => {
                 localStorage.setItem("authToken", data.token);
-
+     
                 document.cookie = `token=${data.token}; path=/; max-age=${
                   24 * 60 * 60
                 }; SameSite=Lax`;
+                console.log("Response data:", data);
+                console.log("Cookies:", document.cookie);
                 window.location.href = "./views/home.html";
               })
               .catch((error) => {
