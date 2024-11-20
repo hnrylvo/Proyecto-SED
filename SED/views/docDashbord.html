@@ -1,53 +1,66 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin - Gestión de Médicos</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+  </head>
+  <body class="bg-gray-100">
     <div class="container mx-auto p-6">
-        <h2 class="text-3xl font-bold text-center mb-6">Gestión de Médicos Veterinarios</h2>
-        
-        <div class="flex justify-end mb-4">
-            <a href="./addDoc.html" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                + Agregar Nuevo Médico
-            </a>
-        </div>
+      <h2 class="text-3xl font-bold text-center mb-6">
+        Gestión de Médicos Veterinarios
+      </h2>
+      <!-- Verificar si el token existe en el localStorage -->
+      <script>
+        if (!localStorage.getItem("authToken")) {
+          window.location.href = "../index.html"; // Redirigir si no hay token
+        }
+      </script>
+      <div class="flex justify-end mb-4">
+        <a
+          href="./addDoc.html"
+          class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          + Agregar Nuevo Médico
+        </a>
+      </div>
 
-        <div id="medicosTable" class="bg-white rounded-lg shadow-md overflow-hidden">
-            <table class="w-full">
-                <thead class="bg-gray-200">
-                    <tr>
-                        <th class="p-4 text-left">Nombre</th>
-                        <th class="p-4 text-left">Especialidad</th>
-                        <th class="p-4 text-left">Email</th>
-                        <th class="p-4 text-left">Teléfono</th>
-                        <th class="p-4 text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="medicosListBody">
-                    <!-- Médicos se cargarán dinámicamente aquí -->
-                </tbody>
-            </table>
-        </div>
+      <div
+        id="medicosTable"
+        class="bg-white rounded-lg shadow-md overflow-hidden"
+      >
+        <table class="w-full">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="p-4 text-left">Nombre</th>
+              <th class="p-4 text-left">Especialidad</th>
+              <th class="p-4 text-left">Email</th>
+              <th class="p-4 text-left">Teléfono</th>
+              <th class="p-4 text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="medicosListBody">
+            <!-- Médicos se cargarán dinámicamente aquí -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <script>
-        async function cargarMedicos() {
-            const medicosListBody = document.getElementById('medicosListBody');
-            
-            try {
-                const response = await fetch('/api/medicos');
-                const medicos = await response.json();
+      async function cargarMedicos() {
+        const medicosListBody = document.getElementById("medicosListBody");
 
-                medicosListBody.innerHTML = '';
+        try {
+          const response = await fetch("/api/medicos");
+          const medicos = await response.json();
 
-                medicos.forEach(medico => {
-                    const medicoRow = document.createElement('tr');
-                    medicoRow.className = 'border-b';
-                    medicoRow.innerHTML = `
+          medicosListBody.innerHTML = "";
+
+          medicos.forEach((medico) => {
+            const medicoRow = document.createElement("tr");
+            medicoRow.className = "border-b";
+            medicoRow.innerHTML = `
                         <td class="p-4">${medico.nombre}</td>
                         <td class="p-4">${medico.especialidad}</td>
                         <td class="p-4">${medico.email}</td>
@@ -61,58 +74,58 @@
                             </button>
                         </td>
                     `;
-                    medicosListBody.appendChild(medicoRow);
-                });
+            medicosListBody.appendChild(medicoRow);
+          });
 
-                if (medicos.length === 0) {
-                    medicosListBody.innerHTML = `
+          if (medicos.length === 0) {
+            medicosListBody.innerHTML = `
                         <tr>
                             <td colspan="5" class="text-center p-4 text-gray-500">
                                 No se han registrado médicos
                             </td>
                         </tr>
                     `;
-                }
-            } catch (error) {
-                console.error('Error al cargar médicos:', error);
-                medicosListBody.innerHTML = `
+          }
+        } catch (error) {
+          console.error("Error al cargar médicos:", error);
+          medicosListBody.innerHTML = `
                     <tr>
                         <td colspan="5" class="text-center p-4 text-red-500">
                             Error al cargar los médicos. Intente nuevamente.
                         </td>
                     </tr>
                 `;
+        }
+      }
+
+      async function eliminarMedico(id) {
+        if (confirm("¿Está seguro que desea eliminar este médico?")) {
+          try {
+            const response = await fetch(`/api/medicos/${id}`, {
+              method: "DELETE",
+            });
+            const data = await response.json();
+
+            if (data.success) {
+              alert("Médico eliminado exitosamente");
+              cargarMedicos();
+            } else {
+              alert("Error al eliminar médico");
             }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Error al procesar la solicitud");
+          }
         }
+      }
 
-        async function eliminarMedico(id) {
-            if (confirm('¿Está seguro que desea eliminar este médico?')) {
-                try {
-                    const response = await fetch(`/api/medicos/${id}`, {
-                        method: 'DELETE'
-                    });
-                    const data = await response.json();
+      function editarMedico(id) {
+        // Redirigir a página de edición con el ID del médico
+        window.location.href = `editar-medico.html?id=${id}`;
+      }
 
-                    if (data.success) {
-                        alert('Médico eliminado exitosamente');
-                        cargarMedicos();
-                    } else {
-                        alert('Error al eliminar médico');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Error al procesar la solicitud');
-                }
-            }
-        }
-
-        function editarMedico(id) {
-            // Redirigir a página de edición con el ID del médico
-            window.location.href = `editar-medico.html?id=${id}`;
-        }
-
-        // Cargar médicos al cargar la página
-        document.addEventListener('DOMContentLoaded', cargarMedicos);
+      // Cargar médicos al cargar la página
+      document.addEventListener("DOMContentLoaded", cargarMedicos);
     </script>
-</body>
+  </body>
 </html>
