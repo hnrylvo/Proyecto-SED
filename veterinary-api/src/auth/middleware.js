@@ -1,37 +1,69 @@
 const { decrypt } = require("./encryption");
-function authenticateToken(req, res, next) {
+const { User } = require("../models");
+const { Doctor } = require("../models");
+const { getDB } = require("../utils/database");
+const { ObjectId } = require("mongodb");
+
+async function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) {
+    res.statusCode = 401;
+    return res.end(JSON.stringify({ error: "Authentication required" }));
+  }
+
   try {
-    // Get tokens from both Authorization header and cookies
-    const authHeader = req.headers["authorization"];
-    const headerToken = authHeader && authHeader.split(" ")[1];
-    const cookieToken = req.headers.cookie?.split("token=")[1]?.split(";")[0];
+    const decoded = decrypt(token);
+    const [userId, role, timestamp] = decoded.split(":");
 
-    if (!headerToken || !cookieToken) {
-      res.statusCode = 401;
-      return res.end(JSON.stringify({ error: "Authentication required" }));
-    }
-
-    // Decode and verify both tokens
-    const headerDecoded = decrypt(headerToken);
-    const cookieDecoded = decrypt(cookieToken);
-    const [headerUserId, headerRole] = headerDecoded.split(":");
-    const [cookieUserId, cookieRole, timestamp] = cookieDecoded.split(":");
-
-    // Verify tokens match
-    if (headerUserId !== cookieUserId || headerRole !== cookieRole) {
-      res.statusCode = 403;
-      return res.end(JSON.stringify({ error: "Token mismatch detected" }));
-    }
-
-    // Check expiration
     if (Date.now() - parseInt(timestamp) > 24 * 60 * 60 * 1000) {
       res.statusCode = 401;
       return res.end(JSON.stringify({ error: "Token expired" }));
     }
 
-    req.user = { id: cookieUserId, role: cookieRole };
+    // Initialize database models
+    const db = getDB();
+    const userModel = new User(db);
+    const doctorModel = new Doctor(db);
+
+    // Verify user exists and role matches database
+    let user;
+    try {
+      if (role === "doctor") {
+        // Usar findOne con el ObjectId
+        user = await doctorModel.findOne({ _id: new ObjectId(userId) });
+      } else {
+        // Para usuarios regulares y admin
+        user = await userModel.findById(userId);
+      }
+    } catch (error) {
+      console.error("Database lookup error:", error);
+      res.statusCode = 500;
+      return res.end(JSON.stringify({ error: "Internal server error" }));
+    }
+
+    // Si no se encuentra el usuario o el rol no coincide
+    if (!user) {
+      res.statusCode = 403;
+      return res.end(JSON.stringify({ error: "User not found" }));
+    }
+
+    if (user.role !== role) {
+      res.statusCode = 403;
+      return res.end(JSON.stringify({ error: "Invalid role" }));
+    }
+
+    req.user = {
+      id: userId,
+      role,
+      verified: true,
+      email: user.email,
+      nombre: user.nombre,
+    };
     next();
   } catch (error) {
+    console.error("Authentication error:", error);
     res.statusCode = 403;
     res.end(JSON.stringify({ error: "Invalid token" }));
   }
@@ -39,16 +71,19 @@ function authenticateToken(req, res, next) {
 
 function checkRole(allowedRoles) {
   return (req, res, next) => {
-    if (!req.user || !allowedRoles.includes(req.user.role)) {
+    if (
+      !req.user ||
+      !req.user.verified ||
+      !allowedRoles.includes(req.user.role)
+    ) {
       res.statusCode = 403;
       return res.end(JSON.stringify({ error: "Access denied" }));
     }
-    return next(); // Agregar return
+    return next();
   };
 }
 
 function logout(req, res, next) {
-  // Agregar next
   if (!res.headersSent) {
     res.setHeader(
       "Set-Cookie",
@@ -56,25 +91,10 @@ function logout(req, res, next) {
     );
   }
   res.statusCode = 200;
-  return next(); // Agregar return y next
-}
-
-async function handleRequest(req, res, routeHandlers) {
-  if (Array.isArray(routeHandlers)) {
-    let index = 0;
-    const next = async () => {
-      if (index < routeHandlers.length) {
-        await routeHandlers[index++](req, res, next);
-      }
-    };
-    await next();
-  } else if (typeof routeHandlers === "function") {
-    await routeHandlers(req, res);
-  }
+  return next();
 }
 
 module.exports = {
-  handleRequest,
   authenticateToken,
   checkRole,
   logout,

@@ -7,60 +7,126 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-100">
-    <div class="container mx-auto p-6">
-      <h2 class="text-3xl font-bold text-center mb-6">
-        Gestión de Médicos Veterinarios
-      </h2>
-      <!-- Verificar si el token existe en el localStorage -->
-      <script>
-        // Verificar si hay un token de autenticación
-        const token = localStorage.getItem("authToken");
-        const role = localStorage.getItem("role");
+    <!-- Contenedor principal inicialmente oculto -->
+    <div id="mainContainer" class="hidden">
+      <div class="container mx-auto p-6">
+        <h2 class="text-3xl font-bold text-center mb-6">
+          Gestión de Médicos Veterinarios
+        </h2>
 
-        if (!token || role !== "admin") {
-          // Redirigir al inicio si no es administrador
-          window.location.href = "../index.html";
-        }
-      </script>
+        <div class="flex justify-end gap-4 mb-4">
+          <a
+            href="./addDoc.html"
+            class="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+          >
+            + Agregar Nuevo Médico
+          </a>
+          <button
+            id="logoutBtn"
+            class="bg-red-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-600 transition duration-300"
+          >
+            Cerrar Sesión
+          </button>
+        </div>
 
-      <div class="flex justify-end gap-4 mb-4">
-        <a
-          href="./addDoc.html"
-          class="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+        <div
+          id="medicosTable"
+          class="bg-white rounded-lg shadow-md overflow-hidden"
         >
-          + Agregar Nuevo Médico
-        </a>
-        <button
-          id="logoutBtn"
-          class="bg-red-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-600 transition duration-300"
-        >
-          Cerrar Sesión
-        </button>
+          <table class="w-full">
+            <thead class="bg-gray-200">
+              <tr>
+                <th class="p-4 text-left">Nombre</th>
+                <th class="p-4 text-left">Especialidad</th>
+                <th class="p-4 text-left">Email</th>
+                <th class="p-4 text-left">Teléfono</th>
+                <th class="p-4 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="medicosListBody">
+              <!-- Médicos se cargarán dinámicamente aquí -->
+            </tbody>
+          </table>
+        </div>
       </div>
+    </div>
 
-      <div
-        id="medicosTable"
-        class="bg-white rounded-lg shadow-md overflow-hidden"
-      >
-        <table class="w-full">
-          <thead class="bg-gray-200">
-            <tr>
-              <th class="p-4 text-left">Nombre</th>
-              <th class="p-4 text-left">Especialidad</th>
-              <th class="p-4 text-left">Email</th>
-              <th class="p-4 text-left">Teléfono</th>
-              <th class="p-4 text-center">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="medicosListBody">
-            <!-- Médicos se cargarán dinámicamente aquí -->
-          </tbody>
-        </table>
+    <!-- Mensaje de carga -->
+    <div
+      id="loadingMessage"
+      class="fixed inset-0 flex items-center justify-center bg-white"
+    >
+      <p class="text-xl">Verificando acceso...</p>
+    </div>
+
+    <!-- Mensaje de acceso denegado -->
+    <div
+      id="accessDeniedMessage"
+      class="hidden fixed inset-0 flex items-center justify-center bg-white"
+    >
+      <div class="text-center">
+        <p class="text-xl text-red-600 mb-4">Acceso Denegado</p>
+        <p class="mb-4">No tiene permisos para acceder a esta página.</p>
+        <a
+          href="../index.html"
+          class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600"
+        >
+          Volver al Inicio
+        </a>
       </div>
     </div>
 
     <script>
+      async function verificarAcceso() {
+        const token = localStorage.getItem("authToken");
+        const role = localStorage.getItem("role");
+
+        if (!token || role !== "admin") {
+          showAccessDenied();
+          return false;
+        }
+
+        try {
+          const response = await fetch("http://localhost:3000/admin/doctors", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            showAccessDenied();
+            return false;
+          }
+
+          document.getElementById("loadingMessage").classList.add("hidden");
+          document.getElementById("mainContainer").classList.remove("hidden");
+          return true;
+        } catch (error) {
+          console.error("Error de verificación:", error);
+          showAccessDenied();
+          return false;
+        }
+      }
+
+      function showAccessDenied() {
+        document.getElementById("loadingMessage").classList.add("hidden");
+        document
+          .getElementById("accessDeniedMessage")
+          .classList.remove("hidden");
+        // Remover cualquier token y rol inválido
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("role");
+        setTimeout(() => {
+          window.location.href = "../index.html";
+        }, 2000);
+      }
+
       async function cargarMedicos() {
+        if (!(await verificarAcceso())) return;
+
         const medicosListBody = document.getElementById("medicosListBody");
         const token = localStorage.getItem("authToken");
 
@@ -75,6 +141,10 @@
           });
 
           if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+              showAccessDenied();
+              return;
+            }
             throw new Error("Error al cargar médicos");
           }
 
@@ -85,47 +155,46 @@
             const medicoRow = document.createElement("tr");
             medicoRow.className = "border-b";
             medicoRow.innerHTML = `
-                <td class="p-4">${medico.nombre}</td>
-                <td class="p-4">${medico.especialidad}</td>
-                <td class="p-4">${medico.email}</td>
-                <td class="p-4">${medico.telefono}</td>
-                <td class="p-4 text-center">
-
-                    <button onclick="eliminarMedico('${medico._id}')" class="text-red-500 hover:text-red-700">
-                        Eliminar
-                    </button>
-                </td>
+              <td class="p-4">${medico.nombre}</td>
+              <td class="p-4">${medico.especialidad}</td>
+              <td class="p-4">${medico.email}</td>
+              <td class="p-4">${medico.telefono}</td>
+              <td class="p-4 text-center">
+                <button onclick="eliminarMedico('${medico._id}')" class="text-red-500 hover:text-red-700">
+                  Eliminar
+                </button>
+              </td>
             `;
             medicosListBody.appendChild(medicoRow);
           });
 
           if (medicos.length === 0) {
             medicosListBody.innerHTML = `
-                <tr>
-                    <td colspan="5" class="text-center p-4 text-gray-500">
-                        No se han registrado médicos
-                    </td>
-                </tr>
+              <tr>
+                <td colspan="5" class="text-center p-4 text-gray-500">
+                  No se han registrado médicos
+                </td>
+              </tr>
             `;
           }
         } catch (error) {
           console.error("Error al cargar médicos:", error);
           medicosListBody.innerHTML = `
             <tr>
-                <td colspan="5" class="text-center p-4 text-red-500">
-                    Error al cargar los médicos. Intente nuevamente.
-                </td>
+              <td colspan="5" class="text-center p-4 text-red-500">
+                Error al cargar los médicos. Intente nuevamente.
+              </td>
             </tr>
-        `;
+          `;
         }
       }
 
       async function eliminarMedico(id) {
+        if (!(await verificarAcceso())) return;
+
         if (confirm("¿Está seguro que desea eliminar este médico?")) {
           try {
             const token = localStorage.getItem("authToken");
-            console.log("Intentando eliminar médico con ID:", id); // Debug
-
             const response = await fetch(
               `http://localhost:3000/admin/doctors/${id}`,
               {
@@ -138,18 +207,17 @@
               }
             );
 
-            console.log("Respuesta del servidor:", response.status); // Debug
-
             if (!response.ok) {
+              if (response.status === 401 || response.status === 403) {
+                showAccessDenied();
+                return;
+              }
               const errorData = await response.json();
               throw new Error(errorData.error || "Error al eliminar médico");
             }
 
-            const data = await response.json();
-            console.log("Respuesta exitosa:", data); // Debug
-
             alert("Médico eliminado exitosamente");
-            await cargarMedicos(); // Recargar la lista
+            await cargarMedicos();
           } catch (error) {
             console.error("Error detallado:", error);
             alert(error.message || "Error al procesar la solicitud");
@@ -157,18 +225,17 @@
         }
       }
 
-      document.addEventListener("DOMContentLoaded", () => {
-        const token = localStorage.getItem("authToken");
-        if (!token) {
-          window.location.href = "../index.html";
-          return;
+      // Inicialización al cargar la página
+      document.addEventListener("DOMContentLoaded", async () => {
+        await verificarAcceso();
+        if (
+          !document.getElementById("mainContainer").classList.contains("hidden")
+        ) {
+          await cargarMedicos();
         }
-        cargarMedicos();
       });
-    </script>
 
-    <!-- Cerrar sesión -->
-    <script>
+      // Manejo del cierre de sesión
       document.getElementById("logoutBtn").addEventListener("click", () => {
         try {
           localStorage.removeItem("authToken");
@@ -188,6 +255,13 @@
           console.error("Error al cerrar sesión:", error);
         }
       });
+
+      // Verificación periódica de acceso
+      setInterval(async () => {
+        if (!(await verificarAcceso())) {
+          showAccessDenied();
+        }
+      }, 30000); // Verificar cada 30 segundos
     </script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-const { validateDoctorData, sanitizeInput } = require("../utils/validators");
+const { validateDoctorData} = require("../utils/validators");
 const { Doctor } = require("../models");
 const { encrypt } = require("../auth/encryption");
 const { getDB } = require("../utils/database");
@@ -19,12 +19,6 @@ const adminController = {
 
       const doctorModel = new Doctor(getDB());
 
-      // Check if email already exists
-      const existingDoctor = await doctorModel.findByEmail(sanitizedData.email);
-      if (existingDoctor) {
-        res.statusCode = 400;
-        return res.end(JSON.stringify({ error: "Email already exists" }));
-      }
 
       const doctor = await doctorModel.create({
         ...sanitizedData,

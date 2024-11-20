@@ -7,35 +7,63 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-100">
-    <div class="container mx-auto p-6">
-      <h2 class="text-3xl font-bold text-center mb-6">
-        Panel de Control - Doctor
-      </h2>
+    <!-- Contenedor principal inicialmente oculto -->
+    <div id="mainContainer" class="hidden">
+      <div class="container mx-auto p-6">
+        <h2 class="text-3xl font-bold text-center mb-6">
+          Panel de Control - Doctor
+        </h2>
 
-      <!-- Barra de búsqueda -->
-      <div class="mb-6">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Buscar por nombre o especie..."
-          class="w-full p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+        <!-- Barra de búsqueda -->
+        <div class="mb-6">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Buscar por nombre o especie..."
+            class="w-full p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-      <div
-        id="mascotasList"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-      >
-        <!-- Mascotas se cargarán dinámicamente aquí -->
-      </div>
-
-      <div class="text-center mt-6">
-        <button
-          id="logoutBtn"
-          class="bg-red-500 text-white py-3 rounded-md hover:bg-red-600 transition duration-300"
+        <div
+          id="mascotasList"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
         >
-          Cerrar Sesión
-        </button>
+          <!-- Mascotas se cargarán dinámicamente aquí -->
+        </div>
+
+        <div class="text-center mt-6">
+          <button
+            id="logoutBtn"
+            class="bg-red-500 text-white px-6 py-3 rounded-md hover:bg-red-600 transition duration-300"
+          >
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje de carga -->
+    <div
+      id="loadingMessage"
+      class="fixed inset-0 flex items-center justify-center bg-white"
+    >
+      <p class="text-xl">Verificando acceso...</p>
+    </div>
+
+    <!-- Mensaje de acceso denegado -->
+    <div
+      id="accessDeniedMessage"
+      class="hidden fixed inset-0 flex items-center justify-center bg-white"
+    >
+      <div class="text-center">
+        <p class="text-xl text-red-600 mb-4">Acceso Denegado</p>
+        <p class="mb-4">No tiene permisos para acceder a esta página.</p>
+        <a
+          href="../index.html"
+          class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600"
+        >
+          Volver al Inicio
+        </a>
       </div>
     </div>
 
@@ -69,33 +97,59 @@
     </div>
 
     <script>
-      document.getElementById("logoutBtn").addEventListener("click", () => {
-        try {
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("role");
-
-          document.cookie.split(";").forEach(function (c) {
-            document.cookie = c
-              .replace(/^ +/, "")
-              .replace(
-                /=.*/,
-                "=;expires=" + new Date().toUTCString() + ";path=/"
-              );
-          });
-
-          window.location.href = "../index.html";
-        } catch (error) {
-          console.error("Error al cerrar sesión:", error);
-        }
-      });
-    </script>
-
-    <script>
       let currentAnimalId = null;
       const modal = document.getElementById("editModal");
       const searchInput = document.getElementById("searchInput");
 
+      async function verificarAcceso() {
+        const token = localStorage.getItem("authToken");
+        const role = localStorage.getItem("role");
+
+        if (!token || role !== "doctor") {
+          showAccessDenied();
+          return false;
+        }
+
+        try {
+          const response = await fetch("http://localhost:3000/doctor/animals", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            showAccessDenied();
+            return false;
+          }
+
+          document.getElementById("loadingMessage").classList.add("hidden");
+          document.getElementById("mainContainer").classList.remove("hidden");
+          return true;
+        } catch (error) {
+          console.error("Error de verificación:", error);
+          showAccessDenied();
+          return false;
+        }
+      }
+
+      function showAccessDenied() {
+        document.getElementById("loadingMessage").classList.add("hidden");
+        document
+          .getElementById("accessDeniedMessage")
+          .classList.remove("hidden");
+        // Remover cualquier token y rol inválido
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("role");
+        setTimeout(() => {
+          window.location.href = "../index.html";
+        }, 2000);
+      }
+
       async function cargarMascotas(searchQuery = "") {
+        if (!(await verificarAcceso())) return;
+
         const mascotasList = document.getElementById("mascotasList");
         const token = localStorage.getItem("authToken");
 
@@ -116,7 +170,7 @@
 
           if (!response.ok) {
             if (response.status === 401 || response.status === 403) {
-              window.location.href = "../index.html";
+              showAccessDenied();
               return;
             }
             throw new Error("Error al cargar mascotas");
@@ -129,55 +183,47 @@
             const mascotaCard = document.createElement("div");
             mascotaCard.className = "bg-white rounded-lg shadow-md p-4 mb-4";
             mascotaCard.innerHTML = `
-                       <h3 class="text-xl font-semibold mb-2">${
-                         mascota.name
-                       }</h3>
-                       <p class="mb-1"><strong>Especie:</strong> ${
-                         mascota.species
-                       }</p>
-                       <p class="mb-1"><strong>Raza:</strong> ${
-                         mascota.breed
-                       }</p>
-                       <p class="mb-1"><strong>Edad:</strong> ${
-                         mascota.age
-                       } años</p>
-                       <p class="mb-1"><strong>Peso:</strong> ${
-                         mascota.weight
-                       } kg</p>
-                       <div class="mt-3 p-3 bg-gray-50 rounded">
-                           <p class="font-medium">Observaciones médicas:</p>
-                           <p class="text-gray-700 mt-1">${
-                             mascota.medicalNotes || "Sin observaciones"
-                           }</p>
-                       </div>
-                       <button 
-                           onclick="openModal('${mascota._id}')"
-                           class="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                       >
-                           Actualizar Diagnóstico
-                       </button>
-                   `;
+              <h3 class="text-xl font-semibold mb-2">${mascota.name}</h3>
+              <p class="mb-1"><strong>Especie:</strong> ${mascota.species}</p>
+              <p class="mb-1"><strong>Raza:</strong> ${mascota.breed}</p>
+              <p class="mb-1"><strong>Edad:</strong> ${mascota.age} años</p>
+              <p class="mb-1"><strong>Peso:</strong> ${mascota.weight} kg</p>
+              <div class="mt-3 p-3 bg-gray-50 rounded">
+                <p class="font-medium">Observaciones médicas:</p>
+                <p class="text-gray-700 mt-1">${
+                  mascota.medicalNotes || "Sin observaciones"
+                }</p>
+              </div>
+              <button 
+                onclick="openModal('${mascota._id}')"
+                class="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+              >
+                Actualizar Diagnóstico
+              </button>
+            `;
             mascotasList.appendChild(mascotaCard);
           });
 
           if (mascotas.length === 0) {
             mascotasList.innerHTML = `
-                       <div class="text-center p-4 bg-gray-50 rounded">
-                           <p class="text-gray-500">No se encontraron mascotas</p>
-                       </div>
-                   `;
+              <div class="text-center p-4 bg-gray-50 rounded col-span-3">
+                <p class="text-gray-500">No se encontraron mascotas</p>
+              </div>
+            `;
           }
         } catch (error) {
           console.error("Error al cargar mascotas:", error);
           mascotasList.innerHTML = `
-                   <div class="text-center p-4 bg-red-50 rounded">
-                       <p class="text-red-500">Error al cargar las mascotas. Intente nuevamente.</p>
-                   </div>
-               `;
+            <div class="text-center p-4 bg-red-50 rounded col-span-3">
+              <p class="text-red-500">Error al cargar las mascotas. Intente nuevamente.</p>
+            </div>
+          `;
         }
       }
 
-      function openModal(animalId) {
+      async function openModal(animalId) {
+        if (!(await verificarAcceso())) return;
+
         currentAnimalId = animalId;
         modal.classList.remove("hidden");
         document.getElementById("diagnosisInput").focus();
@@ -190,6 +236,7 @@
       }
 
       async function saveDiagnosis() {
+        if (!(await verificarAcceso())) return;
         if (!currentAnimalId) return;
 
         const medicalNotes = document
@@ -216,8 +263,13 @@
             }
           );
 
-          if (!response.ok)
+          if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+              showAccessDenied();
+              return;
+            }
             throw new Error("Error al actualizar el diagnóstico");
+          }
 
           closeModal();
           await cargarMascotas();
@@ -239,22 +291,48 @@
         }, 300);
       });
 
-      // Verificar autenticación al cargar
-      document.addEventListener("DOMContentLoaded", () => {
-        const token = localStorage.getItem("authToken");
-        const role = localStorage.getItem("role");
-
-        if (!token || role !== "doctor") {
-          window.location.href = "../index.html";
-          return;
+      // Inicialización al cargar la página
+      document.addEventListener("DOMContentLoaded", async () => {
+        await verificarAcceso();
+        if (
+          !document.getElementById("mainContainer").classList.contains("hidden")
+        ) {
+          await cargarMascotas();
         }
-        cargarMascotas();
       });
 
       // Cerrar modal con Escape
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeModal();
       });
+
+      // Manejo del cierre de sesión
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        try {
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("role");
+
+          document.cookie.split(";").forEach(function (c) {
+            document.cookie = c
+              .replace(/^ +/, "")
+              .replace(
+                /=.*/,
+                "=;expires=" + new Date().toUTCString() + ";path=/"
+              );
+          });
+
+          window.location.href = "../index.html";
+        } catch (error) {
+          console.error("Error al cerrar sesión:", error);
+        }
+      });
+
+      // Verificación periódica de acceso
+      setInterval(async () => {
+        if (!(await verificarAcceso())) {
+          showAccessDenied();
+        }
+      }, 30000); // Verificar cada 30 segundos
     </script>
   </body>
 </html>

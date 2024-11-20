@@ -7,184 +7,270 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded-xl shadow-md w-[500px]">
-      <h2 class="text-2xl font-bold text-center mb-6">
-        Registrar Nuevo Médico Veterinario
-      </h2>
-      <form id="medicoForm" class="space-y-4">
-        <div>
-          <label for="nombre" class="block text-sm font-medium text-gray-700"
-            >Nombre Completo</label
-          >
-          <input
-            type="text"
-            id="nombre"
-            name="nombre"
-            required
-            maxlength="50"
-            autocomplete="off"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-          />
-          <span id="nombreError" class="text-red-500 text-sm hidden"></span>
-        </div>
+    <!-- Contenedor principal inicialmente oculto -->
+    <div id="mainContainer" class="hidden">
+      <div class="bg-white p-8 rounded-xl shadow-md w-[500px]">
+        <h2 class="text-2xl font-bold text-center mb-6">
+          Registrar Nuevo Médico Veterinario
+        </h2>
+        <form id="medicoForm" class="space-y-4">
+          <div>
+            <label for="nombre" class="block text-sm font-medium text-gray-700">
+              Nombre Completo
+            </label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              required
+              maxlength="50"
+              autocomplete="off"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+            />
+            <span id="nombreError" class="text-red-500 text-sm hidden"></span>
+          </div>
 
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700"
-            >Correo Electrónico</label
-          >
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-            maxlength="100"
-            autocomplete="off"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-          />
-          <span id="emailError" class="text-red-500 text-sm hidden"></span>
-        </div>
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">
+              Correo Electrónico
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              maxlength="100"
+              autocomplete="off"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+            />
+            <span id="emailError" class="text-red-500 text-sm hidden"></span>
+          </div>
 
-        <div>
-          <label
-            for="especialidad"
-            class="block text-sm font-medium text-gray-700"
-            >Especialidad</label
-          >
-          <select
-            id="especialidad"
-            name="especialidad"
-            required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-          >
-            <option value="">Seleccionar Especialidad</option>
-            <option value="general">Medicina Veterinaria General</option>
-            <option value="pequeños">Pequeños Animales</option>
-            <option value="grandes">Grandes Animales</option>
-            <option value="exoticos">Animales Exóticos</option>
-            <option value="cirujano">Cirugía Veterinaria</option>
-          </select>
-          <span
-            id="especialidadError"
-            class="text-red-500 text-sm hidden"
-          ></span>
-        </div>
+          <div>
+            <label
+              for="especialidad"
+              class="block text-sm font-medium text-gray-700"
+            >
+              Especialidad
+            </label>
+            <select
+              id="especialidad"
+              name="especialidad"
+              required
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+            >
+              <option value="">Seleccionar Especialidad</option>
+              <option value="general">Medicina Veterinaria General</option>
+              <option value="pequeños">Pequeños Animales</option>
+              <option value="grandes">Grandes Animales</option>
+              <option value="exoticos">Animales Exóticos</option>
+              <option value="cirujano">Cirugía Veterinaria</option>
+            </select>
+            <span
+              id="especialidadError"
+              class="text-red-500 text-sm hidden"
+            ></span>
+          </div>
 
-        <div>
-          <label for="telefono" class="block text-sm font-medium text-gray-700"
-            >Teléfono</label
-          >
-          <input
-            type="tel"
-            id="telefono"
-            name="telefono"
-            required
-            pattern="[0-9]{8}"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-          />
-          <span id="telefonoError" class="text-red-500 text-sm hidden"></span>
-        </div>
+          <div>
+            <label
+              for="telefono"
+              class="block text-sm font-medium text-gray-700"
+            >
+              Teléfono
+            </label>
+            <input
+              type="tel"
+              id="telefono"
+              name="telefono"
+              required
+              pattern="[0-9]{8}"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+            />
+            <span id="telefonoError" class="text-red-500 text-sm hidden"></span>
+          </div>
 
-        <div>
-          <label
-            for="fechaIngreso"
-            class="block text-sm font-medium text-gray-700"
-            >Fecha de Ingreso</label
-          >
-          <input
-            type="date"
-            id="fechaIngreso"
-            name="fechaIngreso"
-            required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-          />
-          <span
-            id="fechaIngresoError"
-            class="text-red-500 text-sm hidden"
-          ></span>
-        </div>
+          <div>
+            <label
+              for="fechaIngreso"
+              class="block text-sm font-medium text-gray-700"
+            >
+              Fecha de Ingreso
+            </label>
+            <input
+              type="date"
+              id="fechaIngreso"
+              name="fechaIngreso"
+              required
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+            />
+            <span
+              id="fechaIngresoError"
+              class="text-red-500 text-sm hidden"
+            ></span>
+          </div>
 
-        <div>
-          <label
-            for="matriculaProfesional"
-            class="block text-sm font-medium text-gray-700"
-            >Matrícula Profesional</label
-          >
-          <input
-            type="text"
-            id="matriculaProfesional"
-            name="matriculaProfesional"
-            required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-          />
-          <span
-            id="matriculaProfesionalError"
-            class="text-red-500 text-sm hidden"
-          ></span>
-        </div>
+          <div>
+            <label
+              for="matriculaProfesional"
+              class="block text-sm font-medium text-gray-700"
+            >
+              Matrícula Profesional
+            </label>
+            <input
+              type="text"
+              id="matriculaProfesional"
+              name="matriculaProfesional"
+              required
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+            />
+            <span
+              id="matriculaProfesionalError"
+              class="text-red-500 text-sm hidden"
+            ></span>
+          </div>
 
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700"
-            >Contraseña</label
-          >
-          <input
-            type="password"
-            id="password"
-            name="password"
-            required
-            minlength="8"
-            maxlength="50"
-            autocomplete="new-password"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-          />
-          <span id="passwordError" class="text-red-500 text-sm hidden"></span>
-          <p class="text-sm text-gray-500 mt-1">
-            La contraseña debe tener al menos 8 caracteres, incluir mayúsculas,
-            minúsculas, números y caracteres especiales.
-          </p>
-        </div>
+          <div>
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700"
+            >
+              Contraseña
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              minlength="8"
+              maxlength="50"
+              autocomplete="new-password"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+            />
+            <span id="passwordError" class="text-red-500 text-sm hidden"></span>
+            <p class="text-sm text-gray-500 mt-1">
+              La contraseña debe tener al menos 8 caracteres, incluir
+              mayúsculas, minúsculas, números y caracteres especiales.
+            </p>
+          </div>
 
-        <div>
-          <label
-            for="confirmPassword"
-            class="block text-sm font-medium text-gray-700"
-            >Confirmar Contraseña</label
-          >
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            required
-            minlength="8"
-            maxlength="50"
-            autocomplete="new-password"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-          />
-          <span
-            id="confirmPasswordError"
-            class="text-red-500 text-sm hidden"
-          ></span>
-        </div>
+          <div>
+            <label
+              for="confirmPassword"
+              class="block text-sm font-medium text-gray-700"
+            >
+              Confirmar Contraseña
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              required
+              minlength="8"
+              maxlength="50"
+              autocomplete="new-password"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+            />
+            <span
+              id="confirmPasswordError"
+              class="text-red-500 text-sm hidden"
+            ></span>
+          </div>
 
-        <button
-          type="submit"
-          class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300"
+          <button
+            type="submit"
+            class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300"
+          >
+            Registrar Médico
+          </button>
+        </form>
+        <a
+          href="./docDashbord.html"
+          class="block text-center mt-4 text-blue-500 hover:underline"
         >
-          Registrar Médico
-        </button>
-      </form>
-      <a
-        href="./docDashbord.html"
-        class="block text-center mt-4 text-blue-500 hover:underline"
-      >
-        Ver Médicos Registrados
-      </a>
+          Ver Médicos Registrados
+        </a>
+      </div>
+    </div>
+
+    <!-- Mensaje de carga -->
+    <div
+      id="loadingMessage"
+      class="fixed inset-0 flex items-center justify-center bg-white"
+    >
+      <p class="text-xl">Verificando acceso...</p>
+    </div>
+
+    <!-- Mensaje de acceso denegado -->
+    <div
+      id="accessDeniedMessage"
+      class="hidden fixed inset-0 flex items-center justify-center bg-white"
+    >
+      <div class="text-center">
+        <p class="text-xl text-red-600 mb-4">Acceso Denegado</p>
+        <p class="mb-4">No tiene permisos para acceder a esta página.</p>
+        <a
+          href="../index.html"
+          class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600"
+        >
+          Volver al Inicio
+        </a>
+      </div>
     </div>
 
     <script>
-      document
-        .getElementById("medicoForm")
-        .addEventListener("submit", function (e) {
+      async function verificarAcceso() {
+        const token = localStorage.getItem("authToken");
+        const role = localStorage.getItem("role");
+
+        if (!token || role !== "admin") {
+          showAccessDenied();
+          return false;
+        }
+
+        try {
+          const response = await fetch("http://localhost:3000/admin/doctors", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            showAccessDenied();
+            return false;
+          }
+
+          document.getElementById("loadingMessage").classList.add("hidden");
+          document.getElementById("mainContainer").classList.remove("hidden");
+          return true;
+        } catch (error) {
+          console.error("Error de verificación:", error);
+          showAccessDenied();
+          return false;
+        }
+      }
+
+      function showAccessDenied() {
+        document.getElementById("loadingMessage").classList.add("hidden");
+        document
+          .getElementById("accessDeniedMessage")
+          .classList.remove("hidden");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("role");
+        setTimeout(() => {
+          window.location.href = "../index.html";
+        }, 2000);
+      }
+
+      function initializeFormValidation() {
+        const medicoForm = document.getElementById("medicoForm");
+
+        medicoForm.addEventListener("submit", async function (e) {
           e.preventDefault();
+
+          if (!(await verificarAcceso())) return;
 
           const nombre = document.getElementById("nombre");
           const email = document.getElementById("email");
@@ -227,7 +313,6 @@
             el.classList.add("hidden");
           });
 
-          // Validaciones
           let isValid = true;
 
           // Validación de nombre
@@ -320,58 +405,80 @@
               password: password.value,
             };
 
-            // Obtener el token del localStorage
             const token = localStorage.getItem("authToken");
 
-            fetch("http://localhost:3000/admin/doctors", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`, // Agregar el token
-              },
-              credentials: "include",
-              body: JSON.stringify(medicoData),
-            })
-              .then((response) => {
-                if (!response.ok) {
-                  if (response.status === 401) {
-                    throw new Error("No autorizado");
-                  } else if (response.status === 403) {
-                    throw new Error("No tiene permisos de administrador");
-                  }
-                  throw new Error("Error en el servidor");
+            try {
+              const response = await fetch(
+                "http://localhost:3000/admin/doctors",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  credentials: "include",
+                  body: JSON.stringify(medicoData),
                 }
-                return response.json();
-              })
-              .then((data) => {
-                alert("Médico registrado exitosamente");
-                window.location.href = "./docDashbord.html";
-              })
-              .catch((error) => {
-                console.error("Error:", error);
+              );
+
+              if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                  showAccessDenied();
+                  return;
+                }
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Error en el servidor");
+              }
+
+              const data = await response.json();
+              alert("Médico registrado exitosamente");
+              window.location.href = "./docDashbord.html";
+            } catch (error) {
+              console.error("Error:", error);
+              if (
+                error.message.includes("No autorizado") ||
+                error.message.includes("permisos")
+              ) {
+                showAccessDenied();
+              } else {
                 alert(error.message || "Error al conectar con el servidor");
-              });
+              }
+            }
           }
         });
 
-      // Validación en tiempo real para confirmar contraseña
-      document
-        .getElementById("confirmPassword")
-        .addEventListener("input", function () {
-          const password = document.getElementById("password").value;
-          const confirmPassword = this.value;
-          const confirmPasswordError = document.getElementById(
-            "confirmPasswordError"
-          );
+        // Validación en tiempo real para confirmar contraseña
+        document
+          .getElementById("confirmPassword")
+          .addEventListener("input", function () {
+            const password = document.getElementById("password").value;
+            const confirmPassword = this.value;
+            const confirmPasswordError = document.getElementById(
+              "confirmPasswordError"
+            );
 
-          if (password !== confirmPassword) {
-            confirmPasswordError.textContent = "Las contraseñas no coinciden";
-            confirmPasswordError.classList.remove("hidden");
-          } else {
-            confirmPasswordError.textContent = "";
-            confirmPasswordError.classList.add("hidden");
-          }
-        });
+            if (password !== confirmPassword) {
+              confirmPasswordError.textContent = "Las contraseñas no coinciden";
+              confirmPasswordError.classList.remove("hidden");
+            } else {
+              confirmPasswordError.textContent = "";
+              confirmPasswordError.classList.add("hidden");
+            }
+          });
+      }
+
+      // Inicialización al cargar la página
+      document.addEventListener("DOMContentLoaded", async () => {
+        if (!(await verificarAcceso())) return;
+        initializeFormValidation();
+      });
+
+      // Verificación periódica de acceso
+      setInterval(async () => {
+        if (!(await verificarAcceso())) {
+          showAccessDenied();
+        }
+      }, 30000); // Verificar cada 30 segundos
     </script>
   </body>
 </html>
