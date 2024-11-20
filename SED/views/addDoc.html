@@ -21,6 +21,8 @@
             id="nombre"
             name="nombre"
             required
+            maxlength="50"
+            autocomplete="off"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
           />
           <span id="nombreError" class="text-red-500 text-sm hidden"></span>
@@ -35,6 +37,8 @@
             id="email"
             name="email"
             required
+            maxlength="100"
+            autocomplete="off"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
           />
           <span id="emailError" class="text-red-500 text-sm hidden"></span>
@@ -127,7 +131,9 @@
             id="password"
             name="password"
             required
-            minlength="6"
+            minlength="8"
+            maxlength="50"
+            autocomplete="new-password"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
           />
           <span id="passwordError" class="text-red-500 text-sm hidden"></span>
@@ -148,7 +154,9 @@
             id="confirmPassword"
             name="confirmPassword"
             required
-            minlength="6"
+            minlength="8"
+            maxlength="50"
+            autocomplete="new-password"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
           />
           <span

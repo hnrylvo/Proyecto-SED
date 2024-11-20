@@ -9,7 +9,7 @@
   <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-8 rounded-xl shadow-md w-96">
       <h2 class="text-2xl font-bold text-center mb-6">Iniciar Sesión</h2>
-      <form id="loginForm" class="space-y-4">
+      <form id="loginForm" class="space-y-4" novalidate>
         <div>
           <label for="email" class="block text-sm font-medium text-gray-700"
             >Correo Electrónico</label
@@ -19,6 +19,7 @@
             id="email"
             name="email"
             required
+            maxlength="100"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
           <span id="emailError" class="text-red-500 text-sm hidden"></span>
@@ -32,6 +33,8 @@
             id="password"
             name="password"
             required
+            minlength="8"
+            maxlength="50"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
           <span id="passwordError" class="text-red-500 text-sm hidden"></span>

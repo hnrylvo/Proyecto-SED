@@ -9,63 +9,59 @@
   <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-8 rounded-xl shadow-md w-96">
       <h2 class="text-2xl font-bold text-center mb-6">Registro</h2>
-      <form id="registroForm" class="space-y-4">
+      <form id="registroForm" class="space-y-4" novalidate>
         <div>
-          <label for="nombre" class="block text-sm font-medium text-gray-700"
-            >Nombre Completo</label
-          >
+          <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre Completo</label>
           <input
             type="text"
             id="nombre"
             name="nombre"
             required
+            minlength="3"
+            maxlength="50"
+            pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
           <span id="nombreError" class="text-red-500 text-sm hidden"></span>
         </div>
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700"
-            >Correo Electrónico</label
-          >
+          <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
           <input
             type="email"
             id="email"
             name="email"
             required
+            maxlength="100"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
           <span id="emailError" class="text-red-500 text-sm hidden"></span>
         </div>
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700"
-            >Contraseña</label
-          >
+          <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
           <input
             type="password"
             id="password"
             name="password"
             required
+            minlength="8"
+            maxlength="20"
+            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
           <span id="passwordError" class="text-red-500 text-sm hidden"></span>
         </div>
         <div>
-          <label
-            for="confirmPassword"
-            class="block text-sm font-medium text-gray-700"
-            >Confirmar Contraseña</label
-          >
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirmar Contraseña</label>
           <input
             type="password"
             id="confirmPassword"
             name="confirmPassword"
             required
+            minlength="8"
+            maxlength="20"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
-          <span
-            id="confirmPasswordError"
-            class="text-red-500 text-sm hidden"
-          ></span>
+          <span id="confirmPasswordError" class="text-red-500 text-sm hidden"></span>
         </div>
         <button
           type="submit"
@@ -76,9 +72,7 @@
       </form>
       <p class="text-center mt-4 text-sm">
         ¿Ya tienes cuenta?
-        <a href="../index.html" class="text-blue-500 hover:underline"
-          >Iniciar Sesión</a
-        >
+        <a href="../index.html" class="text-blue-500 hover:underline">Iniciar Sesión</a>
       </p>
     </div>
 
