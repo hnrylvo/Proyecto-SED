@@ -1,71 +1,89 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Veterinaria - Mascotas Registradas</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+  </head>
+  <body class="bg-gray-100">
     <div class="container mx-auto p-6">
-        <h2 class="text-3xl font-bold text-center mb-6">Mascotas Registradas</h2>
-        <div id="mascotasList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Mascotas se cargarán dinámicamente aquí -->
-        </div>
-        <div class="text-center mt-6">
-            <a href="../views/home.html" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Volver al Inicio
-            </a>
-        </div>
+      <h2 class="text-3xl font-bold text-center mb-6">Mascotas Registradas</h2>
+      <div
+        id="mascotasList"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
+        <!-- Mascotas se cargarán dinámicamente aquí -->
+      </div>
+      <div class="text-center mt-6">
+        <a
+          href="../views/home.html"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Volver al Inicio
+        </a>
+      </div>
     </div>
 
     <script>
-        // Función para cargar mascotas desde la API
-        async function cargarMascotas() {
-            const mascotasList = document.getElementById('mascotasList');
-            
-            try {
-                const response = await fetch('/api/mascotas');
-                const mascotas = await response.json();
+      async function cargarMascotas() {
+        const mascotasList = document.getElementById("mascotasList"); // Corrige el ID
 
-                // Limpiar lista actual
-                mascotasList.innerHTML = '';
+        try {
+          const token = localStorage.getItem("authToken");
+          const response = await fetch("http://localhost:3000/user/animals", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
 
-                // Crear tarjetas para cada mascota
-                mascotas.forEach(mascota => {
-                    const mascotaCard = document.createElement('div');
-                    mascotaCard.className = 'bg-white rounded-lg shadow-md p-4';
-                    mascotaCard.innerHTML = `
-                        <h3 class="text-xl font-semibold mb-2">${mascota.nombre}</h3>
-                        <p><strong>Especie:</strong> ${mascota.especie}</p>
-                        <p><strong>Raza:</strong> ${mascota.raza}</p>
-                        <p><strong>Edad:</strong> ${mascota.edad} años</p>
-                        <p><strong>Peso:</strong> ${mascota.peso} kg</p>
-                        ${mascota.observaciones ? `<p><strong>Observaciones:</strong> ${mascota.observaciones}</p>` : ''}
-                    `;
-                    mascotasList.appendChild(mascotaCard);
-                });
+          const mascotas = await response.json();
 
-                // Manejo si no hay mascotas
-                if (mascotas.length === 0) {
-                    mascotasList.innerHTML = `
-                        <div class="col-span-full text-center text-gray-500">
-                            No se han registrado mascotas
-                        </div>
-                    `;
+          // Limpiar lista actual
+          mascotasList.innerHTML = "";
+
+          // Crear tarjetas para cada mascota
+          mascotas.forEach((mascota) => {
+            const mascotaCard = document.createElement("div");
+            mascotaCard.className = "bg-white rounded-lg shadow-md p-4";
+            mascotaCard.innerHTML = `
+                <h3 class="text-xl font-semibold mb-2">${mascota.name}</h3>
+                <p><strong>Especie:</strong> ${mascota.species}</p>
+                <p><strong>Raza:</strong> ${mascota.breed}</p>
+                <p><strong>Edad:</strong> ${mascota.age} años</p>
+                <p><strong>Peso:</strong> ${mascota.weight} kg</p>
+                ${
+                  mascota.medicalNotes
+                    ? `<p><strong>Observaciones:</strong> ${mascota.medicalNotes}</p>`
+                    : ""
                 }
-            } catch (error) {
-                console.error('Error al cargar mascotas:', error);
-                mascotasList.innerHTML = `
-                    <div class="col-span-full text-center text-red-500">
-                        Error al cargar las mascotas. Intente nuevamente.
-                    </div>
-                `;
-            }
-        }
+            `;
+            mascotasList.appendChild(mascotaCard);
+          });
 
-        // Cargar mascotas al cargar la página
-        document.addEventListener('DOMContentLoaded', cargarMascotas);
+          // Manejo si no hay mascotas
+          if (mascotas.length === 0) {
+            mascotasList.innerHTML = `
+                <div class="col-span-full text-center text-gray-500">
+                    No se han registrado mascotas
+                </div>
+            `;
+          }
+        } catch (error) {
+          console.error("Error al cargar mascotas:", error);
+          mascotasList.innerHTML = `
+            <div class="col-span-full text-center text-red-500">
+                Error al cargar las mascotas. Intente nuevamente.
+            </div>
+        `;
+        }
+      }
+
+      // Cargar mascotas al cargar la página
+      document.addEventListener("DOMContentLoaded", cargarMascotas);
     </script>
-</body>
+  </body>
 </html>

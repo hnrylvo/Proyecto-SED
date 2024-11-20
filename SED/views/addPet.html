@@ -161,15 +161,23 @@
           };
 
           try {
-            const response = await fetch("/api/mascotas", {
+            const token = document.cookie
+              .split("; ")
+              .find((row) => row.startsWith("token="))
+              ?.split("=")[1];
+
+            const response = await fetch("http://localhost:3000/user/animals", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
               },
+              credentials: "include",
               body: JSON.stringify(mascotaData),
             });
 
             const data = await response.json();
+            console.log("Response data:", data);
             if (response.ok) {
               alert("Mascota registrada exitosamente");
               window.location.href = "../views/home.html";
@@ -177,7 +185,7 @@
               alert(data.error || "Error al registrar la mascota.");
             }
           } catch (error) {
-            console.error("Error al registrar mascota:", error);
+            console.error("Error completo:", error);
             alert("Error en el servidor. Intenta nuevamente.");
           }
         });
