@@ -1,202 +1,361 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin - Agregar Médico</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-8 rounded-xl shadow-md w-[500px]">
-        <h2 class="text-2xl font-bold text-center mb-6">Registrar Nuevo Médico Veterinario</h2>
-        <form id="medicoForm" class="space-y-4">
-            <div>
-                <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre Completo</label>
-                <input 
-                    type="text" 
-                    id="nombre" 
-                    name="nombre" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="nombreError" class="text-red-500 text-sm hidden"></span>
-            </div>
+      <h2 class="text-2xl font-bold text-center mb-6">
+        Registrar Nuevo Médico Veterinario
+      </h2>
+      <form id="medicoForm" class="space-y-4">
+        <div>
+          <label for="nombre" class="block text-sm font-medium text-gray-700"
+            >Nombre Completo</label
+          >
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+          />
+          <span id="nombreError" class="text-red-500 text-sm hidden"></span>
+        </div>
 
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="emailError" class="text-red-500 text-sm hidden"></span>
-            </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700"
+            >Correo Electrónico</label
+          >
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+          />
+          <span id="emailError" class="text-red-500 text-sm hidden"></span>
+        </div>
 
-            <div>
-                <label for="especialidad" class="block text-sm font-medium text-gray-700">Especialidad</label>
-                <select 
-                    id="especialidad" 
-                    name="especialidad" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                    <option value="">Seleccionar Especialidad</option>
-                    <option value="general">Medicina Veterinaria General</option>
-                    <option value="pequeños">Pequeños Animales</option>
-                    <option value="grandes">Grandes Animales</option>
-                    <option value="exoticos">Animales Exóticos</option>
-                    <option value="cirujano">Cirugía Veterinaria</option>
-                </select>
-                <span id="especialidadError" class="text-red-500 text-sm hidden"></span>
-            </div>
+        <div>
+          <label
+            for="especialidad"
+            class="block text-sm font-medium text-gray-700"
+            >Especialidad</label
+          >
+          <select
+            id="especialidad"
+            name="especialidad"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+          >
+            <option value="">Seleccionar Especialidad</option>
+            <option value="general">Medicina Veterinaria General</option>
+            <option value="pequeños">Pequeños Animales</option>
+            <option value="grandes">Grandes Animales</option>
+            <option value="exoticos">Animales Exóticos</option>
+            <option value="cirujano">Cirugía Veterinaria</option>
+          </select>
+          <span
+            id="especialidadError"
+            class="text-red-500 text-sm hidden"
+          ></span>
+        </div>
 
-            <div>
-                <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
-                <input 
-                    type="tel" 
-                    id="telefono" 
-                    name="telefono" 
-                    required 
-                    pattern="[0-9]{8}" 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="telefonoError" class="text-red-500 text-sm hidden"></span>
-            </div>
+        <div>
+          <label for="telefono" class="block text-sm font-medium text-gray-700"
+            >Teléfono</label
+          >
+          <input
+            type="tel"
+            id="telefono"
+            name="telefono"
+            required
+            pattern="[0-9]{8}"
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+          />
+          <span id="telefonoError" class="text-red-500 text-sm hidden"></span>
+        </div>
 
-            <div>
-                <label for="fechaIngreso" class="block text-sm font-medium text-gray-700">Fecha de Ingreso</label>
-                <input 
-                    type="date" 
-                    id="fechaIngreso" 
-                    name="fechaIngreso" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="fechaIngresoError" class="text-red-500 text-sm hidden"></span>
-            </div>
+        <div>
+          <label
+            for="fechaIngreso"
+            class="block text-sm font-medium text-gray-700"
+            >Fecha de Ingreso</label
+          >
+          <input
+            type="date"
+            id="fechaIngreso"
+            name="fechaIngreso"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+          />
+          <span
+            id="fechaIngresoError"
+            class="text-red-500 text-sm hidden"
+          ></span>
+        </div>
 
-            <div>
-                <label for="matriculaProfesional" class="block text-sm font-medium text-gray-700">Matrícula Profesional</label>
-                <input 
-                    type="text" 
-                    id="matriculaProfesional" 
-                    name="matriculaProfesional" 
-                    required 
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                >
-                <span id="matriculaProfesionalError" class="text-red-500 text-sm hidden"></span>
-            </div>
+        <div>
+          <label
+            for="matriculaProfesional"
+            class="block text-sm font-medium text-gray-700"
+            >Matrícula Profesional</label
+          >
+          <input
+            type="text"
+            id="matriculaProfesional"
+            name="matriculaProfesional"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+          />
+          <span
+            id="matriculaProfesionalError"
+            class="text-red-500 text-sm hidden"
+          ></span>
+        </div>
 
-            <button 
-                type="submit" 
-                class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300"
-            >
-                Registrar Médico
-            </button>
-        </form>
-        <a href="./docDashbord.html" class="block text-center mt-4 text-blue-500 hover:underline">
-            Ver Médicos Registrados
-        </a>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700"
+            >Contraseña</label
+          >
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            minlength="6"
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+          />
+          <span id="passwordError" class="text-red-500 text-sm hidden"></span>
+          <p class="text-sm text-gray-500 mt-1">
+            La contraseña debe tener al menos 8 caracteres, incluir mayúsculas,
+            minúsculas, números y caracteres especiales.
+          </p>
+        </div>
+
+        <div>
+          <label
+            for="confirmPassword"
+            class="block text-sm font-medium text-gray-700"
+            >Confirmar Contraseña</label
+          >
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+            minlength="6"
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+          />
+          <span
+            id="confirmPasswordError"
+            class="text-red-500 text-sm hidden"
+          ></span>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300"
+        >
+          Registrar Médico
+        </button>
+      </form>
+      <a
+        href="./docDashbord.html"
+        class="block text-center mt-4 text-blue-500 hover:underline"
+      >
+        Ver Médicos Registrados
+      </a>
     </div>
 
     <script>
-        document.getElementById('medicoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const nombre = document.getElementById('nombre');
-            const email = document.getElementById('email');
-            const especialidad = document.getElementById('especialidad');
-            const telefono = document.getElementById('telefono');
-            const fechaIngreso = document.getElementById('fechaIngreso');
-            const matriculaProfesional = document.getElementById('matriculaProfesional');
-            
-            const nombreError = document.getElementById('nombreError');
-            const emailError = document.getElementById('emailError');
-            const especialidadError = document.getElementById('especialidadError');
-            const telefonoError = document.getElementById('telefonoError');
-            const fechaIngresoError = document.getElementById('fechaIngresoError');
-            const matriculaProfesionalError = document.getElementById('matriculaProfesionalError');
+      document
+        .getElementById("medicoForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
 
-            // Resetear errores
-            [nombreError, emailError, especialidadError, telefonoError, fechaIngresoError, matriculaProfesionalError].forEach(el => {
-                el.textContent = '';
-                el.classList.add('hidden');
-            });
+          const nombre = document.getElementById("nombre");
+          const email = document.getElementById("email");
+          const especialidad = document.getElementById("especialidad");
+          const telefono = document.getElementById("telefono");
+          const fechaIngreso = document.getElementById("fechaIngreso");
+          const matriculaProfesional = document.getElementById(
+            "matriculaProfesional"
+          );
+          const password = document.getElementById("password");
+          const confirmPassword = document.getElementById("confirmPassword");
 
-            // Validaciones
-            let isValid = true;
+          const nombreError = document.getElementById("nombreError");
+          const emailError = document.getElementById("emailError");
+          const especialidadError =
+            document.getElementById("especialidadError");
+          const telefonoError = document.getElementById("telefonoError");
+          const fechaIngresoError =
+            document.getElementById("fechaIngresoError");
+          const matriculaProfesionalError = document.getElementById(
+            "matriculaProfesionalError"
+          );
+          const passwordError = document.getElementById("passwordError");
+          const confirmPasswordError = document.getElementById(
+            "confirmPasswordError"
+          );
 
-            if (nombre.value.trim().length < 3) {
-                nombreError.textContent = 'Nombre debe tener al menos 3 caracteres';
-                nombreError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Resetear errores
+          [
+            nombreError,
+            emailError,
+            especialidadError,
+            telefonoError,
+            fechaIngresoError,
+            matriculaProfesionalError,
+            passwordError,
+            confirmPasswordError,
+          ].forEach((el) => {
+            el.textContent = "";
+            el.classList.add("hidden");
+          });
 
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email.value)) {
-                emailError.textContent = 'Correo electrónico inválido';
-                emailError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Validaciones
+          let isValid = true;
 
-            if (!especialidad.value) {
-                especialidadError.textContent = 'Debe seleccionar una especialidad';
-                especialidadError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Validación de nombre
+          if (nombre.value.trim().length < 3) {
+            nombreError.textContent =
+              "El nombre debe tener al menos 3 caracteres";
+            nombreError.classList.remove("hidden");
+            isValid = false;
+          } else if (!/^[A-Za-zÁáÉéÍíÓóÚúÑñ\s]+$/.test(nombre.value.trim())) {
+            nombreError.textContent =
+              "El nombre solo debe contener letras y espacios";
+            nombreError.classList.remove("hidden");
+            isValid = false;
+          }
 
-            const telefonoRegex = /^[0-9]{8}$/;
-            if (!telefonoRegex.test(telefono.value)) {
-                telefonoError.textContent = 'Teléfono debe tener 10 dígitos';
-                telefonoError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Validación de email
+          const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+          if (!emailRegex.test(email.value)) {
+            emailError.textContent =
+              "Por favor, ingrese un correo electrónico válido";
+            emailError.classList.remove("hidden");
+            isValid = false;
+          }
 
-            if (!fechaIngreso.value) {
-                fechaIngresoError.textContent = 'Debe seleccionar una fecha de ingreso';
-                fechaIngresoError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Validación de especialidad
+          if (!especialidad.value) {
+            especialidadError.textContent = "Debe seleccionar una especialidad";
+            especialidadError.classList.remove("hidden");
+            isValid = false;
+          }
 
-            if (matriculaProfesional.value.trim().length < 5) {
-                matriculaProfesionalError.textContent = 'Matrícula profesional inválida';
-                matriculaProfesionalError.classList.remove('hidden');
-                isValid = false;
-            }
+          // Validación de teléfono
+          const telefonoRegex = /^[0-9]{8}$/;
+          if (!telefonoRegex.test(telefono.value)) {
+            telefonoError.textContent =
+              "El teléfono debe tener exactamente 8 dígitos numéricos";
+            telefonoError.classList.remove("hidden");
+            isValid = false;
+          }
 
-            if (isValid) {
-                const medicoData = {
-                    nombre: nombre.value,
-                    email: email.value,
-                    especialidad: especialidad.value,
-                    telefono: telefono.value,
-                    fechaIngreso: fechaIngreso.value,
-                    matriculaProfesional: matriculaProfesional.value
-                };
+          // Validación de fecha de ingreso
+          const hoy = new Date();
+          const fechaSeleccionada = new Date(fechaIngreso.value);
+          if (!fechaIngreso.value) {
+            fechaIngresoError.textContent =
+              "Debe seleccionar una fecha de ingreso";
+            fechaIngresoError.classList.remove("hidden");
+            isValid = false;
+          } else if (fechaSeleccionada > hoy) {
+            fechaIngresoError.textContent =
+              "La fecha de ingreso no puede ser futura";
+            fechaIngresoError.classList.remove("hidden");
+            isValid = false;
+          }
 
-                fetch('/api/medicos', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(medicoData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Médico registrado exitosamente');
-                        window.location.href = './docDashbord.html';
-                    } else {
-                        alert('Error al registrar médico');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
+          // Validación de matrícula profesional
+          const matriculaRegex = /^[A-Z0-9-]{5,15}$/;
+          if (!matriculaRegex.test(matriculaProfesional.value)) {
+            matriculaProfesionalError.textContent =
+              "La matrícula debe tener entre 5 y 15 caracteres (letras mayúsculas, números y guiones)";
+            matriculaProfesionalError.classList.remove("hidden");
+            isValid = false;
+          }
+
+          // Validación de contraseña
+          const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+          if (!passwordRegex.test(password.value)) {
+            passwordError.textContent =
+              "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial";
+            passwordError.classList.remove("hidden");
+            isValid = false;
+          }
+
+          // Validación de confirmación de contraseña
+          if (password.value !== confirmPassword.value) {
+            confirmPasswordError.textContent = "Las contraseñas no coinciden";
+            confirmPasswordError.classList.remove("hidden");
+            isValid = false;
+          }
+
+          if (isValid) {
+            const medicoData = {
+              nombre: nombre.value.trim(),
+              email: email.value.trim(),
+              especialidad: especialidad.value,
+              telefono: telefono.value,
+              fechaIngreso: fechaIngreso.value,
+              matriculaProfesional: matriculaProfesional.value.trim(),
+              password: password.value,
+            };
+
+            fetch("/api/medicos", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(medicoData),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.success) {
+                  alert("Médico registrado exitosamente");
+                  window.location.href = "./docDashbord.html";
+                } else {
+                  alert(
+                    "Error al registrar médico: " +
+                      (data.message || "Error desconocido")
+                  );
+                }
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+                alert("Error al conectar con el servidor");
+              });
+          }
+        });
+
+      // Validación en tiempo real para confirmar contraseña
+      document
+        .getElementById("confirmPassword")
+        .addEventListener("input", function () {
+          const password = document.getElementById("password").value;
+          const confirmPassword = this.value;
+          const confirmPasswordError = document.getElementById(
+            "confirmPasswordError"
+          );
+
+          if (password !== confirmPassword) {
+            confirmPasswordError.textContent = "Las contraseñas no coinciden";
+            confirmPasswordError.classList.remove("hidden");
+          } else {
+            confirmPasswordError.textContent = "";
+            confirmPasswordError.classList.add("hidden");
+          }
         });
     </script>
-</body>
+  </body>
 </html>
