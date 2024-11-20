@@ -17,20 +17,21 @@
           window.location.href = "../index.html"; // Redirigir si no hay token
         }
       </script>
-      <div class="flex justify-end mb-4">
+      <div class="flex justify-end gap-4 mb-4">
         <a
           href="./addDoc.html"
-          class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          class="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600 transition duration-300"
         >
           + Agregar Nuevo Médico
         </a>
         <button
           id="logoutBtn"
-          class="w-full bg-red-500 text-white py-3 rounded-md hover:bg-red-600 transition duration-300"
+          class="bg-red-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-600 transition duration-300"
         >
           Cerrar Sesión
         </button>
       </div>
+      
 
       <div
         id="medicosTable"
