@@ -312,28 +312,36 @@
               password: password.value,
             };
 
-            fetch("/api/medicos", {
+            // Obtener el token del localStorage
+            const token = localStorage.getItem("authToken");
+
+            fetch("http://localhost:3000/admin/doctors", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`, // Agregar el token
               },
+              credentials: "include",
               body: JSON.stringify(medicoData),
             })
-              .then((response) => response.json())
-              .then((data) => {
-                if (data.success) {
-                  alert("Médico registrado exitosamente");
-                  window.location.href = "./docDashbord.html";
-                } else {
-                  alert(
-                    "Error al registrar médico: " +
-                      (data.message || "Error desconocido")
-                  );
+              .then((response) => {
+                if (!response.ok) {
+                  if (response.status === 401) {
+                    throw new Error("No autorizado");
+                  } else if (response.status === 403) {
+                    throw new Error("No tiene permisos de administrador");
+                  }
+                  throw new Error("Error en el servidor");
                 }
+                return response.json();
+              })
+              .then((data) => {
+                alert("Médico registrado exitosamente");
+                window.location.href = "./docDashbord.html";
               })
               .catch((error) => {
                 console.error("Error:", error);
-                alert("Error al conectar con el servidor");
+                alert(error.message || "Error al conectar con el servidor");
               });
           }
         });

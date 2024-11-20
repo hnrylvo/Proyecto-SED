@@ -17,7 +17,6 @@ async function parseBody(req) {
   });
 }
 
-// routes/index.js
 async function handleRequest(req, res) {
   res.setHeader("Content-Type", "application/json");
 
@@ -34,36 +33,66 @@ async function handleRequest(req, res) {
     };
 
     const url = new URL(req.url, `http://${req.headers.host}`);
-    const route = routes[url.pathname];
+    let matchedRoute = null;
+    let params = {};
 
-    if (!route || !route[req.method]) {
+    // Buscar coincidencia de ruta, incluyendo rutas dinámicas
+    Object.entries(routes).forEach(([routePath, handlers]) => {
+      const routeParts = routePath.split("/");
+      const urlParts = url.pathname.split("/");
+
+      if (routeParts.length === urlParts.length) {
+        let isMatch = true;
+        const urlParams = {};
+
+        for (let i = 0; i < routeParts.length; i++) {
+          if (routeParts[i].startsWith(":")) {
+            // Es un parámetro
+            const paramName = routeParts[i].slice(1);
+            urlParams[paramName] = urlParts[i];
+          } else if (routeParts[i] !== urlParts[i]) {
+            isMatch = false;
+            break;
+          }
+        }
+
+        if (isMatch) {
+          matchedRoute = handlers;
+          params = urlParams;
+        }
+      }
+    });
+
+    if (!matchedRoute || !matchedRoute[req.method]) {
       res.statusCode = 404;
       return res.end(JSON.stringify({ error: "Not found" }));
     }
 
-    const handlers = Array.isArray(route[req.method])
-      ? route[req.method]
-      : [route[req.method]];
+    // Agregar parámetros a req
+    req.params = params;
 
-    // Middleware chain handler
-    let currentHandlerIndex = 0;
+    const handlers = Array.isArray(matchedRoute[req.method])
+      ? matchedRoute[req.method]
+      : [matchedRoute[req.method]];
 
-    const executeNextHandler = async () => {
-      if (currentHandlerIndex >= handlers.length) return;
+    // Ejecutar handlers en secuencia
+    for (let i = 0; i < handlers.length; i++) {
+      const handler = handlers[i];
+      await new Promise((resolve) => {
+        handler(req, res, resolve);
+      });
 
-      const handler = handlers[currentHandlerIndex];
-      currentHandlerIndex++;
-
-      await handler(req, res, executeNextHandler);
-    };
-
-    await executeNextHandler();
+      if (res.writableEnded) {
+        break;
+      }
+    }
   } catch (error) {
     console.error("Request error:", error);
-    if (!res.headersSent) {
+    if (!res.writableEnded) {
       res.statusCode = 500;
       res.end(JSON.stringify({ error: "Internal server error" }));
     }
   }
 }
+
 module.exports = { handleRequest };

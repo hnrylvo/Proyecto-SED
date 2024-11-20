@@ -13,6 +13,9 @@ const adminRoutes = {
       checkRole(["admin"]),
       adminController.getAllDoctors,
     ],
+  },
+  "/admin/doctors/:id": {
+    // Nueva ruta para operaciones con ID
     DELETE: [
       authenticateToken,
       checkRole(["admin"]),
@@ -22,4 +25,3 @@ const adminRoutes = {
 };
 
 module.exports = adminRoutes;
-

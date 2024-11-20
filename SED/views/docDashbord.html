@@ -62,82 +62,109 @@
     <script>
       async function cargarMedicos() {
         const medicosListBody = document.getElementById("medicosListBody");
+        const token = localStorage.getItem("authToken");
 
         try {
-          const response = await fetch("/api/medicos");
-          const medicos = await response.json();
+          const response = await fetch("http://localhost:3000/admin/doctors", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
 
+          if (!response.ok) {
+            throw new Error("Error al cargar médicos");
+          }
+
+          const medicos = await response.json();
           medicosListBody.innerHTML = "";
 
           medicos.forEach((medico) => {
             const medicoRow = document.createElement("tr");
             medicoRow.className = "border-b";
             medicoRow.innerHTML = `
-                        <td class="p-4">${medico.nombre}</td>
-                        <td class="p-4">${medico.especialidad}</td>
-                        <td class="p-4">${medico.email}</td>
-                        <td class="p-4">${medico.telefono}</td>
-                        <td class="p-4 text-center">
-                            <button onclick="editarMedico(${medico.id})" class="text-blue-500 hover:text-blue-700 mr-2">
-                                Editar
-                            </button>
-                            <button onclick="eliminarMedico(${medico.id})" class="text-red-500 hover:text-red-700">
-                                Eliminar
-                            </button>
-                        </td>
-                    `;
+                <td class="p-4">${medico.nombre}</td>
+                <td class="p-4">${medico.especialidad}</td>
+                <td class="p-4">${medico.email}</td>
+                <td class="p-4">${medico.telefono}</td>
+                <td class="p-4 text-center">
+
+                    <button onclick="eliminarMedico('${medico._id}')" class="text-red-500 hover:text-red-700">
+                        Eliminar
+                    </button>
+                </td>
+            `;
             medicosListBody.appendChild(medicoRow);
           });
 
           if (medicos.length === 0) {
             medicosListBody.innerHTML = `
-                        <tr>
-                            <td colspan="5" class="text-center p-4 text-gray-500">
-                                No se han registrado médicos
-                            </td>
-                        </tr>
-                    `;
+                <tr>
+                    <td colspan="5" class="text-center p-4 text-gray-500">
+                        No se han registrado médicos
+                    </td>
+                </tr>
+            `;
           }
         } catch (error) {
           console.error("Error al cargar médicos:", error);
           medicosListBody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="text-center p-4 text-red-500">
-                            Error al cargar los médicos. Intente nuevamente.
-                        </td>
-                    </tr>
-                `;
+            <tr>
+                <td colspan="5" class="text-center p-4 text-red-500">
+                    Error al cargar los médicos. Intente nuevamente.
+                </td>
+            </tr>
+        `;
         }
       }
 
       async function eliminarMedico(id) {
-        if (confirm("¿Está seguro que desea eliminar este médico?")) {
-          try {
-            const response = await fetch(`/api/medicos/${id}`, {
-              method: "DELETE",
-            });
-            const data = await response.json();
+    if (confirm("¿Está seguro que desea eliminar este médico?")) {
+        try {
+            const token = localStorage.getItem("authToken");
+            console.log("Intentando eliminar médico con ID:", id); // Debug
 
-            if (data.success) {
-              alert("Médico eliminado exitosamente");
-              cargarMedicos();
-            } else {
-              alert("Error al eliminar médico");
+            const response = await fetch(
+                `http://localhost:3000/admin/doctors/${id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                }
+            );
+
+            console.log("Respuesta del servidor:", response.status); // Debug
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Error al eliminar médico");
             }
-          } catch (error) {
-            console.error("Error:", error);
-            alert("Error al procesar la solicitud");
-          }
+
+            const data = await response.json();
+            console.log("Respuesta exitosa:", data); // Debug
+            
+            alert("Médico eliminado exitosamente");
+            await cargarMedicos(); // Recargar la lista
+        } catch (error) {
+            console.error("Error detallado:", error);
+            alert(error.message || "Error al procesar la solicitud");
         }
-      }
-
-      function editarMedico(id) {
-        // Redirigir a página de edición con el ID del médico
-        window.location.href = `editar-medico.html?id=${id}`;
-      }
-
-      // Cargar médicos al cargar la página
-      document.addEventListener("DOMContentLoaded", cargarMedicos);
+    }
+}
+      
+      document.addEventListener("DOMContentLoaded", () => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          window.location.href = "../index.html";
+          return;
+        }
+        cargarMedicos();
+      });
     </script>
 
     <!-- Cerrar sesión -->
