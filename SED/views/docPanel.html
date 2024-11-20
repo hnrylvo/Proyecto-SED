@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Veterinaria - Panel del Doctor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <h2 class="text-3xl font-bold text-center mb-6">Panel de Control - Doctor</h2>
+        
+        <!-- Barra de búsqueda -->
+        <div class="mb-6">
+            <input 
+                type="text" 
+                id="searchInput"
+                placeholder="Buscar por nombre o especie..." 
+                class="w-full p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+        </div>
+
+        <div id="mascotasList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Mascotas se cargarán dinámicamente aquí -->
+        </div>
+
+        <div class="text-center mt-6">
+            <a href="../views/home.html" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Volver al Inicio
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal para editar observaciones -->
+    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg w-full max-w-lg">
+            <h3 class="text-xl font-bold mb-4">Editar Observaciones</h3>
+            <textarea 
+                id="diagnosisInput" 
+                class="w-full h-32 p-2 border border-gray-300 rounded mb-4"
+                placeholder="Ingrese las observaciones médicas..."
+            ></textarea>
+            <div class="flex justify-end gap-2">
+                <button 
+                    onclick="closeModal()"
+                    class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                >
+                    Cancelar
+                </button>
+                <button 
+                    onclick="saveDiagnosis()"
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAnimalId = null;
+        const modal = document.getElementById('editModal');
+        const searchInput = document.getElementById('searchInput');
+
+        async function cargarMascotas(searchQuery = '') {
+            const mascotasList = document.getElementById("mascotasList");
+            try {
+                const token = localStorage.getItem("authToken");
+                const url = searchQuery 
+                    ? `http://localhost:3000/doctor/animals/search?query=${encodeURIComponent(searchQuery)}`
+                    : "http://localhost:3000/doctor/animals/all";
+
+                const response = await fetch(url, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                const mascotas = await response.json();
+                mascotasList.innerHTML = "";
+
+                mascotas.forEach((mascota) => {
+                    const mascotaCard = document.createElement("div");
+                    mascotaCard.className = "bg-white rounded-lg shadow-md p-4";
+                    mascotaCard.innerHTML = `
+                        <h3 class="text-xl font-semibold mb-2">${mascota.name}</h3>
+                        <p><strong>Especie:</strong> ${mascota.species}</p>
+                        <p><strong>Raza:</strong> ${mascota.breed}</p>
+                        <p><strong>Edad:</strong> ${mascota.age} años</p>
+                        <p><strong>Peso:</strong> ${mascota.weight} kg</p>
+                        <div class="mt-2 p-2 bg-gray-50 rounded">
+                            <p><strong>Observaciones médicas:</strong></p>
+                            <p class="text-gray-700">${mascota.diagnosis || 'Sin observaciones'}</p>
+                        </div>
+                        <button 
+                            onclick="openModal('${mascota._id}')"
+                            class="mt-3 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        >
+                            Editar Observaciones
+                        </button>
+                    `;
+                    mascotasList.appendChild(mascotaCard);
+                });
+
+                if (mascotas.length === 0) {
+                    mascotasList.innerHTML = `
+                        <div class="col-span-full text-center text-gray-500">
+                            No se encontraron mascotas
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error("Error al cargar mascotas:", error);
+                mascotasList.innerHTML = `
+                    <div class="col-span-full text-center text-red-500">
+                        Error al cargar las mascotas. Intente nuevamente.
+                    </div>
+                `;
+            }
+        }
+
+        function openModal(animalId) {
+            currentAnimalId = animalId;
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.getElementById('diagnosisInput').value = '';
+            currentAnimalId = null;
+        }
+
+        async function saveDiagnosis() {
+            if (!currentAnimalId) return;
+
+            const diagnosis = document.getElementById('diagnosisInput').value;
+            const token = localStorage.getItem("authToken");
+
+            try {
+                const response = await fetch(`http://localhost:3000/doctor/animals/${currentAnimalId}/diagnosis`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ diagnosis })
+                });
+
+                if (response.ok) {
+                    closeModal();
+                    cargarMascotas(); // Recargar la lista para mostrar los cambios
+                } else {
+                    throw new Error('Error al actualizar las observaciones');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al guardar las observaciones. Por favor, intente nuevamente.');
+            }
+        }
+
+        // Implementar búsqueda con debounce
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                cargarMascotas(e.target.value);
+            }, 300);
+        });
+
+        // Cargar mascotas al iniciar la página
+        document.addEventListener("DOMContentLoaded", () => cargarMascotas());
+    </script>
+</body>
+</html>
