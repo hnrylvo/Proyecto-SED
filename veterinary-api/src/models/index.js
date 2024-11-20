@@ -1,9 +1,9 @@
-const User = require('./User');
-const Doctor = require('./Doctor');
-const Animal = require('./Animal');
+const Animal = require("./Animal");
+const User = require("./User");
+const Doctor = require("./Doctor");
 
 module.exports = {
-    User,
-    Doctor,
-    Animal
+  Animal,
+  User,
+  Doctor,
 };

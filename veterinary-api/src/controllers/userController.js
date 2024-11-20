@@ -3,18 +3,8 @@ const { getDB } = require("../utils/database");
 
 const userController = {
   addAnimal: async (req, res, next) => {
-    const { name, species, age, weigth, breed, medicalNotes } = req.body;
+    const { name, species, age, weight, breed, medicalNotes } = req.body;
     const ownerId = req.user.id;
-
-    console.log("Campos recibidos:", {
-      name,
-      species,
-      age,
-      weigth,
-      breed,
-      medicalNotes,
-      ownerId,
-    });
 
     try {
       const animalModel = new Animal(getDB());
@@ -22,7 +12,7 @@ const userController = {
         name,
         species,
         age,
-        weigth,
+        weight,
         breed,
         medicalNotes,
         ownerId,
@@ -33,14 +23,27 @@ const userController = {
       return res.end(
         JSON.stringify({
           message: "Animal added successfully",
-
-          animalId: animal.insertedId,
         })
       );
     } catch (error) {
       console.error("Error adding animal:", error);
       res.statusCode = 500;
       return res.end(JSON.stringify({ error: "Internal server error" }));
+    }
+  },
+  getMyAnimals: async (req, res) => {
+    try {
+      const animalModel = new Animal(getDB());
+      const ownerId = req.user.id; // ID del usuario autenticado
+
+      const animals = await animalModel.findByOwner(ownerId);
+
+      res.statusCode = 200;
+      res.end(JSON.stringify(animals));
+    } catch (error) {
+      console.error("Error getting animals:", error);
+      res.statusCode = 500;
+      res.end(JSON.stringify({ error: "Internal server error" }));
     }
   },
 };

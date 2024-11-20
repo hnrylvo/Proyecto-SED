@@ -59,7 +59,7 @@ const authController = {
       }
 
       const token = encrypt(`${account._id}:${account.role}:${Date.now()}`);
-      console.log("Token generado:", token);
+
 
       // Configurar la cookie correctamente
       res.setHeader(
@@ -69,8 +69,7 @@ const authController = {
 
       res.end(
         JSON.stringify({
-          role: account.role,
-          token: token,
+          role: account.role
         })
       );
     } catch (error) {

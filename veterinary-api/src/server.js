@@ -7,14 +7,20 @@ const PORT = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
   // CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500"); // Tu origen frontend
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, DELETE"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization" // Añadir Authorization
+  );
   res.setHeader("Access-Control-Allow-Credentials", "true");
 
   // Handle preflight requests
   if (req.method === "OPTIONS") {
-    res.statusCode = 204;
+    res.writeHead(204);
     return res.end();
   }
 

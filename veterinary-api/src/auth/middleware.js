@@ -1,7 +1,9 @@
 const { decrypt } = require("./encryption");
 
 function authenticateToken(req, res, next) {
-  const token = req.headers.cookie?.split("token=")[1]?.split(";")[0];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
 
   if (!token) {
     res.statusCode = 401;
@@ -48,10 +50,7 @@ function logout(req, res) {
 async function handleRequest(req, res, routeHandlers) {
   if (Array.isArray(routeHandlers)) {
     for (const handler of routeHandlers) {
-      // Si el handler es una función, ejecútalo
       await handler(req, res);
-
-      // Si la respuesta ya fue enviada, detén el proceso
       if (res.writableEnded) return;
     }
   } else if (typeof routeHandlers === "function") {
