@@ -121,10 +121,13 @@
                 }; SameSite=Lax`;
 
                 if (data.role === "admin") {
-                  localStorage.setItem("role", "admin"); // Guardar rol para verificaciones
+                  localStorage.setItem("role", "admin");
                   window.location.href = "./views/docDashbord.html";
+                } else if (data.role === "doctor") {
+                  localStorage.setItem("role", "doctor");
+                  window.location.href = "./views/docPanel.html";
                 } else {
-                  localStorage.setItem("role", "user"); // Guardar rol para usuarios normales
+                  localStorage.setItem("role", "user");
                   window.location.href = "./views/home.html";
                 }
               })

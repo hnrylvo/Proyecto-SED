@@ -121,42 +121,42 @@
       }
 
       async function eliminarMedico(id) {
-    if (confirm("¿Está seguro que desea eliminar este médico?")) {
-        try {
+        if (confirm("¿Está seguro que desea eliminar este médico?")) {
+          try {
             const token = localStorage.getItem("authToken");
             console.log("Intentando eliminar médico con ID:", id); // Debug
 
             const response = await fetch(
-                `http://localhost:3000/admin/doctors/${id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include",
-                }
+              `http://localhost:3000/admin/doctors/${id}`,
+              {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+                credentials: "include",
+              }
             );
 
             console.log("Respuesta del servidor:", response.status); // Debug
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || "Error al eliminar médico");
+              const errorData = await response.json();
+              throw new Error(errorData.error || "Error al eliminar médico");
             }
 
             const data = await response.json();
             console.log("Respuesta exitosa:", data); // Debug
-            
+
             alert("Médico eliminado exitosamente");
             await cargarMedicos(); // Recargar la lista
-        } catch (error) {
+          } catch (error) {
             console.error("Error detallado:", error);
             alert(error.message || "Error al procesar la solicitud");
+          }
         }
-    }
-}
-      
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         const token = localStorage.getItem("authToken");
         if (!token) {

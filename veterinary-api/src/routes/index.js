@@ -33,6 +33,7 @@ async function handleRequest(req, res) {
     };
 
     const url = new URL(req.url, `http://${req.headers.host}`);
+    req.query = Object.fromEntries(url.searchParams);  
     let matchedRoute = null;
     let params = {};
 
