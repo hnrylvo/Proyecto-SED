@@ -1,18 +1,29 @@
 const { encrypt } = require("../auth/encryption");
-const { validateEmail, validatePassword } = require("../utils/validators");
+const {
+  validateEmail,
+  validatePassword,
+  sanitizeInput,
+} = require("../utils/validators");
 const { User, Doctor } = require("../models");
 const { getDB } = require("../utils/database");
 
 const authController = {
   register: async (req, res) => {
-    const { email, password, name } = req.body;
-
-    if (!validateEmail(email) || !validatePassword(password)) {
-      res.statusCode = 400;
-      return res.end(JSON.stringify({ error: "Invalid email or password" }));
-    }
-
     try {
+      const email = sanitizeInput(req.body.email);
+      const password = sanitizeInput(req.body.password);
+      const name = sanitizeInput(req.body.name);
+
+      if (!validateEmail(email) || !validatePassword(password)) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Invalid email or password" }));
+      }
+
+      if (!name || name.length < 2) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Invalid name" }));
+      }
+
       const userModel = new User(getDB());
       const existingUser = await userModel.findByEmail(email);
 
@@ -27,6 +38,7 @@ const authController = {
         password: encryptedPassword,
         name,
         role: "user",
+        createdAt: new Date(),
       });
 
       res.statusCode = 201;
@@ -37,14 +49,24 @@ const authController = {
         })
       );
     } catch (error) {
+      console.error("Registration error:", error);
       res.statusCode = 500;
       res.end(JSON.stringify({ error: "Internal server error" }));
     }
   },
 
   login: async (req, res) => {
-    const { email, password } = req.body;
     try {
+      const email = sanitizeInput(req.body.email);
+      const password = sanitizeInput(req.body.password);
+
+      if (!email || !password) {
+        res.statusCode = 400;
+        return res.end(
+          JSON.stringify({ error: "Email and password required" })
+        );
+      }
+
       const userModel = new User(getDB());
       const doctorModel = new Doctor(getDB());
 
@@ -60,19 +82,19 @@ const authController = {
 
       const token = encrypt(`${account._id}:${account.role}:${Date.now()}`);
 
-
-      // Configurar la cookie correctamente
       res.setHeader(
         "Set-Cookie",
-        `token=${token}; Path=/; Max-Age=86400; SameSite=Lax` // Quita HttpOnly para poder leerla
+        `token=${token}; Path=/; Max-Age=86400; SameSite=Strict`
       );
 
       res.end(
         JSON.stringify({
-          role: account.role
+          role: account.role,
+          token,
         })
       );
     } catch (error) {
+      console.error("Login error:", error);
       res.statusCode = 500;
       res.end(JSON.stringify({ error: "Internal server error" }));
     }
