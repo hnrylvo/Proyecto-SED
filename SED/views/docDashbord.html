@@ -24,6 +24,12 @@
         >
           + Agregar Nuevo Médico
         </a>
+        <button
+          id="logoutBtn"
+          class="w-full bg-red-500 text-white py-3 rounded-md hover:bg-red-600 transition duration-300"
+        >
+          Cerrar Sesión
+        </button>
       </div>
 
       <div
@@ -127,5 +133,30 @@
       // Cargar médicos al cargar la página
       document.addEventListener("DOMContentLoaded", cargarMedicos);
     </script>
+
+    <!-- Cerrar sesión -->
+    <script>
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+          try {
+    
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("role");
+  
+  
+            document.cookie.split(";").forEach(function (c) {
+              document.cookie = c
+                .replace(/^ +/, "")
+                .replace(
+                  /=.*/,
+                  "=;expires=" + new Date().toUTCString() + ";path=/"
+                );
+            });
+  
+            window.location.href = "../index.html";
+          } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+          }
+        });
+      </script>
   </body>
 </html>
