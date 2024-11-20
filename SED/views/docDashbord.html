@@ -13,10 +13,16 @@
       </h2>
       <!-- Verificar si el token existe en el localStorage -->
       <script>
-        if (!localStorage.getItem("authToken")) {
-          window.location.href = "../index.html"; // Redirigir si no hay token
+        // Verificar si hay un token de autenticación
+        const token = localStorage.getItem("authToken");
+        const role = localStorage.getItem("role");
+
+        if (!token || role !== "admin") {
+          // Redirigir al inicio si no es administrador
+          window.location.href = "../index.html";
         }
       </script>
+
       <div class="flex justify-end gap-4 mb-4">
         <a
           href="./addDoc.html"
@@ -31,7 +37,6 @@
           Cerrar Sesión
         </button>
       </div>
-      
 
       <div
         id="medicosTable"
@@ -137,27 +142,25 @@
 
     <!-- Cerrar sesión -->
     <script>
-        document.getElementById("logoutBtn").addEventListener("click", () => {
-          try {
-    
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("role");
-  
-  
-            document.cookie.split(";").forEach(function (c) {
-              document.cookie = c
-                .replace(/^ +/, "")
-                .replace(
-                  /=.*/,
-                  "=;expires=" + new Date().toUTCString() + ";path=/"
-                );
-            });
-  
-            window.location.href = "../index.html";
-          } catch (error) {
-            console.error("Error al cerrar sesión:", error);
-          }
-        });
-      </script>
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        try {
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("role");
+
+          document.cookie.split(";").forEach(function (c) {
+            document.cookie = c
+              .replace(/^ +/, "")
+              .replace(
+                /=.*/,
+                "=;expires=" + new Date().toUTCString() + ";path=/"
+              );
+          });
+
+          window.location.href = "../index.html";
+        } catch (error) {
+          console.error("Error al cerrar sesión:", error);
+        }
+      });
+    </script>
   </body>
 </html>

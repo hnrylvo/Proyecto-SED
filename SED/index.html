@@ -121,8 +121,10 @@
                 }; SameSite=Lax`;
 
                 if (data.role === "admin") {
+                  localStorage.setItem("role", "admin"); // Guardar rol para verificaciones
                   window.location.href = "./views/docDashbord.html";
                 } else {
+                  localStorage.setItem("role", "user"); // Guardar rol para usuarios normales
                   window.location.href = "./views/home.html";
                 }
               })
