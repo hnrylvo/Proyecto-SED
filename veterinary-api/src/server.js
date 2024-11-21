@@ -1,13 +1,12 @@
 const http = require("http");
 const { handleRequest } = require("./routes");
 const { connectDB } = require("./utils/database");
-const morgan = require("morgan");
 
 const PORT = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
   // CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, DELETE"
@@ -23,11 +22,6 @@ const server = http.createServer((req, res) => {
     res.writeHead(204);
     return res.end();
   }
-
-  // Logging with morgan
-  morgan("dev")(req, res, () => {
-    handleRequest(req, res);
-  });
 });
 
 async function startServer() {

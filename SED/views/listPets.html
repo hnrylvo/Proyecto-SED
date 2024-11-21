@@ -31,7 +31,7 @@
 
         try {
           const token = localStorage.getItem("authToken");
-          const response = await fetch("http://localhost:3000/user/animals", {
+          const response = await fetch("/api/user/animals", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,

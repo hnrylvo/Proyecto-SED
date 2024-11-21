@@ -111,7 +111,7 @@
         }
 
         try {
-          const response = await fetch("http://localhost:3000/doctor/animals", {
+          const response = await fetch("/api/doctor/animals", {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -155,10 +155,10 @@
 
         try {
           const url = searchQuery
-            ? `http://localhost:3000/doctor/animals/search?query=${encodeURIComponent(
+            ? `/api/doctor/animals/search?query=${encodeURIComponent(
                 searchQuery
               )}`
-            : "http://localhost:3000/doctor/animals";
+            : "/api/doctor/animals";
 
           const response = await fetch(url, {
             headers: {
@@ -251,7 +251,7 @@
 
         try {
           const response = await fetch(
-            `http://localhost:3000/doctor/animals/${currentAnimalId}/diagnosis`,
+            `/api/doctor/animals/${currentAnimalId}/diagnosis`,
             {
               method: "PUT",
               headers: {

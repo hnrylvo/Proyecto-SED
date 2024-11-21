@@ -87,7 +87,7 @@
         }
 
         try {
-          const response = await fetch("http://localhost:3000/admin/doctors", {
+          const response = await fetch("/api/admin/doctors", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -131,7 +131,7 @@
         const token = localStorage.getItem("authToken");
 
         try {
-          const response = await fetch("http://localhost:3000/admin/doctors", {
+          const response = await fetch("/api/admin/doctors", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -196,7 +196,7 @@
           try {
             const token = localStorage.getItem("authToken");
             const response = await fetch(
-              `http://localhost:3000/admin/doctors/${id}`,
+              `/api/admin/doctors/${id}`,
               {
                 method: "DELETE",
                 headers: {

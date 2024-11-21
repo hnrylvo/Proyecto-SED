@@ -174,7 +174,7 @@
               .find((row) => row.startsWith("token="))
               ?.split("=")[1];
 
-            const response = await fetch("http://localhost:3000/user/animals", {
+            const response = await fetch("/api/user/animals", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
